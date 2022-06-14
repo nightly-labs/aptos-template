@@ -1,7 +1,7 @@
-import { Typography } from "@mui/material";
-import Button from "@mui/material/Button";
-import { FaucetClient } from "aptos";
-import { UserTransactionRequest } from "aptos/dist/api/data-contracts";
+import { Typography } from '@mui/material'
+import Button from '@mui/material/Button'
+import { FaucetClient } from 'aptos'
+import { UserTransactionRequest } from 'aptos/dist/api/data-contracts'
 import {
   AccountAddress,
   ChainId,
@@ -9,73 +9,59 @@ import {
   ScriptFunction,
   StructTag,
   TransactionPayloadScriptFunction,
-  TypeTagStruct,
-} from "aptos/dist/transaction_builder/aptos_types";
-import {
-  bcsSerializeUint64,
-  bcsToBytes,
-} from "aptos/dist/transaction_builder/bcs";
-import { Buffer } from "buffer";
-import { useState } from "react";
-import "./App.css";
-import { NightlyWalletAdapter } from "./nightly";
+  TypeTagStruct
+} from 'aptos/dist/transaction_builder/aptos_types'
+import { bcsSerializeUint64, bcsToBytes } from 'aptos/dist/transaction_builder/bcs'
+import { Buffer } from 'buffer'
+import { useState } from 'react'
+import './App.css'
+import { NightlyWalletAdapter } from './nightly'
 
-const NightlyAptos = new NightlyWalletAdapter();
-const TESTNET_URL = "https://fullnode.devnet.aptoslabs.com";
-const FAUCET_URL = "https://faucet.devnet.aptoslabs.com";
-const faucetClient = new FaucetClient(TESTNET_URL, FAUCET_URL);
+const NightlyAptos = new NightlyWalletAdapter()
+const TESTNET_URL = 'https://fullnode.devnet.aptoslabs.com'
+const FAUCET_URL = 'https://faucet.devnet.aptoslabs.com'
+const faucetClient = new FaucetClient(TESTNET_URL, FAUCET_URL)
 function App() {
-  const [userPublicKey, setUserPublicKey] = useState<string | undefined>(
-    undefined
-  );
+  const [userPublicKey, setUserPublicKey] = useState<string | undefined>(undefined)
   return (
-    <div className="App">
-      <header className="App-header">
-        <Typography>
-          {userPublicKey ? `Hello, ${userPublicKey}` : "Hello, stranger"}
-        </Typography>
+    <div className='App'>
+      <header className='App-header'>
+        <Typography>{userPublicKey ? `Hello, ${userPublicKey}` : 'Hello, stranger'}</Typography>
         <Button
-          variant="contained"
+          variant='contained'
           style={{ margin: 10 }}
           onClick={async () => {
             const value = await NightlyAptos.connect(() => {
-              console.log("Trigger disconnect Aptos");
-              setUserPublicKey(undefined);
-            });
+              console.log('Trigger disconnect Aptos')
+              setUserPublicKey(undefined)
+            })
 
-            setUserPublicKey(value);
-            console.log(value.toString());
-            await Promise.all([faucetClient.fundAccount(value, 10_000)]);
-          }}
-        >
+            setUserPublicKey(value)
+            console.log(value.toString())
+            await Promise.all([faucetClient.fundAccount(value, 10_000)])
+          }}>
           Connect Aptos
         </Button>
 
         <Button
-          variant="contained"
+          variant='contained'
           style={{ margin: 10 }}
           onClick={async () => {
-            if (!userPublicKey) return;
+            if (!userPublicKey) return
 
-            const [{ sequence_number: sequnceNumber }, chainId] =
-              await Promise.all([
-                faucetClient.getAccount(userPublicKey),
-                faucetClient.getChainId(),
-              ]);
-            const token = new TypeTagStruct(
-              StructTag.fromString("0x1::TestCoin::TestCoin")
-            );
+            const [{ sequence_number: sequnceNumber }, chainId] = await Promise.all([
+              faucetClient.getAccount(userPublicKey),
+              faucetClient.getChainId()
+            ])
+            const token = new TypeTagStruct(StructTag.fromString('0x1::TestCoin::TestCoin'))
             const scriptFunctionPayload = new TransactionPayloadScriptFunction(
               ScriptFunction.natual(
-                "0x1::Coin",
-                "transfer",
+                '0x1::Coin',
+                'transfer',
                 [token],
-                [
-                  bcsToBytes(AccountAddress.fromHex(userPublicKey)),
-                  bcsSerializeUint64(100),
-                ]
+                [bcsToBytes(AccountAddress.fromHex(userPublicKey)), bcsSerializeUint64(100)]
               )
-            );
+            )
             const rawTxn = new RawTransaction(
               AccountAddress.fromHex(userPublicKey),
               BigInt(sequnceNumber),
@@ -84,40 +70,31 @@ function App() {
               BigInt(1),
               BigInt(Math.floor(Date.now() / 1000) + 10),
               new ChainId(chainId)
-            );
-            const bcsTxn = await NightlyAptos.signTransaction(rawTxn);
-            const result = await faucetClient.submitSignedBCSTransaction(
-              bcsTxn
-            );
-            console.log("transaction hash -> ", result);
-          }}
-        >
+            )
+            const bcsTxn = await NightlyAptos.signTransaction(rawTxn)
+            const result = await faucetClient.submitSignedBCSTransaction(bcsTxn)
+            console.log('transaction hash -> ', result)
+          }}>
           Send test 100 TestCoin
         </Button>
         <Button
-          variant="contained"
+          variant='contained'
           style={{ margin: 10 }}
           onClick={async () => {
-            if (!userPublicKey) return;
-            const [{ sequence_number: sequnceNumber }, chainId] =
-              await Promise.all([
-                faucetClient.getAccount(userPublicKey),
-                faucetClient.getChainId(),
-              ]);
-            const token = new TypeTagStruct(
-              StructTag.fromString("0x1::TestCoin::TestCoin")
-            );
+            if (!userPublicKey) return
+            const [{ sequence_number: sequnceNumber }, chainId] = await Promise.all([
+              faucetClient.getAccount(userPublicKey),
+              faucetClient.getChainId()
+            ])
+            const token = new TypeTagStruct(StructTag.fromString('0x1::TestCoin::TestCoin'))
             const scriptFunctionPayload = new TransactionPayloadScriptFunction(
               ScriptFunction.natual(
-                "0x1::Coin",
-                "transfer",
+                '0x1::Coin',
+                'transfer',
                 [token],
-                [
-                  bcsToBytes(AccountAddress.fromHex(userPublicKey)),
-                  bcsSerializeUint64(100),
-                ]
+                [bcsToBytes(AccountAddress.fromHex(userPublicKey)), bcsSerializeUint64(100)]
               )
-            );
+            )
             const plaintx = new RawTransaction(
               AccountAddress.fromHex(userPublicKey),
               BigInt(sequnceNumber),
@@ -126,7 +103,7 @@ function App() {
               BigInt(1),
               BigInt(Math.floor(Date.now() / 1000) + 10),
               new ChainId(chainId)
-            );
+            )
             const plaintx2 = new RawTransaction(
               AccountAddress.fromHex(userPublicKey),
               BigInt(sequnceNumber),
@@ -135,32 +112,27 @@ function App() {
               BigInt(1),
               BigInt(Math.floor(Date.now() / 1000) + 10),
               new ChainId(chainId)
-            );
-            const signedTxs = await NightlyAptos.signAllTransactions([
-              plaintx,
-              plaintx2,
-            ]);
+            )
+            const signedTxs = await NightlyAptos.signAllTransactions([plaintx, plaintx2])
             for (const tx of signedTxs) {
-              const result = await faucetClient.submitSignedBCSTransaction(tx);
-              console.log(result);
+              const result = await faucetClient.submitSignedBCSTransaction(tx)
+              console.log(result)
             }
-          }}
-        >
+          }}>
           Send test 2x 100 TestCoin
         </Button>
 
         <Button
-          variant="contained"
+          variant='contained'
           style={{ margin: 10 }}
           onClick={async () => {
-            await NightlyAptos.disconnect();
-          }}
-        >
+            await NightlyAptos.disconnect()
+          }}>
           Disconnect Aptos
         </Button>
       </header>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
