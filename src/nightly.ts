@@ -1,5 +1,5 @@
 import { AptosNightly, WalletAdapter } from './types'
-import { SubmitTransactionRequest, UserTransactionRequest } from 'aptos/dist/api/data-contracts'
+import { RawTransaction } from 'aptos/dist/transaction_builder/aptos_types'
 
 export class NightlyWalletAdapter implements WalletAdapter {
   _publicKey: string
@@ -13,9 +13,7 @@ export class NightlyWalletAdapter implements WalletAdapter {
     return this._connected
   }
 
-  public async signAllTransactions(
-    transactions: UserTransactionRequest[]
-  ): Promise<SubmitTransactionRequest[]> {
+  public async signAllTransactions(transactions: RawTransaction[]): Promise<Uint8Array[]> {
     return await this._provider.signAllTransactions(transactions)
   }
 
@@ -31,7 +29,7 @@ export class NightlyWalletAdapter implements WalletAdapter {
     return this._publicKey
   }
 
-  async signTransaction(transaction: UserTransactionRequest) {
+  async signTransaction(transaction: RawTransaction) {
     return await this._provider.signTransaction(transaction)
   }
 
