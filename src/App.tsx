@@ -16,17 +16,20 @@ import { Buffer } from 'buffer'
 import { useState } from 'react'
 import './App.css'
 import { NightlyWalletAdapter } from './nightly'
+import { AptosPublicKey } from './types'
 
 const NightlyAptos = new NightlyWalletAdapter()
 const TESTNET_URL = 'https://fullnode.devnet.aptoslabs.com'
 const FAUCET_URL = 'https://faucet.devnet.aptoslabs.com'
 const faucetClient = new FaucetClient(TESTNET_URL, FAUCET_URL)
 function App() {
-  const [userPublicKey, setUserPublicKey] = useState<string | undefined>(undefined)
+  const [userPublicKey, setUserPublicKey] = useState<AptosPublicKey | undefined>(undefined)
   return (
     <div className='App'>
       <header className='App-header'>
-        <Typography>{userPublicKey ? `Hello, ${userPublicKey}` : 'Hello, stranger'}</Typography>
+        <Typography>
+          {userPublicKey ? `Hello, ${userPublicKey.address()}` : 'Hello, stranger'}
+        </Typography>
         <Button
           variant='contained'
           style={{ margin: 10 }}
@@ -38,7 +41,7 @@ function App() {
 
             setUserPublicKey(value)
             console.log(value.toString())
-            await Promise.all([faucetClient.fundAccount(value, 10_000)])
+            await Promise.all([faucetClient.fundAccount(value.address(), 10_000)])
           }}>
           Connect Aptos
         </Button>
@@ -50,7 +53,7 @@ function App() {
             if (!userPublicKey) return
 
             const [{ sequence_number: sequnceNumber }, chainId] = await Promise.all([
-              faucetClient.getAccount(userPublicKey),
+              faucetClient.getAccount(userPublicKey.address()),
               faucetClient.getChainId()
             ])
             const token = new TypeTagStruct(StructTag.fromString('0x1::TestCoin::TestCoin'))
@@ -59,11 +62,14 @@ function App() {
                 '0x1::Coin',
                 'transfer',
                 [token],
-                [bcsToBytes(AccountAddress.fromHex(userPublicKey)), bcsSerializeUint64(100)]
+                [
+                  bcsToBytes(AccountAddress.fromHex(userPublicKey.address())),
+                  bcsSerializeUint64(100)
+                ]
               )
             )
             const rawTxn = new RawTransaction(
-              AccountAddress.fromHex(userPublicKey),
+              AccountAddress.fromHex(userPublicKey.address()),
               BigInt(sequnceNumber),
               scriptFunctionPayload,
               BigInt(1000),
@@ -83,7 +89,7 @@ function App() {
           onClick={async () => {
             if (!userPublicKey) return
             const [{ sequence_number: sequnceNumber }, chainId] = await Promise.all([
-              faucetClient.getAccount(userPublicKey),
+              faucetClient.getAccount(userPublicKey.address()),
               faucetClient.getChainId()
             ])
             const token = new TypeTagStruct(StructTag.fromString('0x1::TestCoin::TestCoin'))
@@ -92,11 +98,14 @@ function App() {
                 '0x1::Coin',
                 'transfer',
                 [token],
-                [bcsToBytes(AccountAddress.fromHex(userPublicKey)), bcsSerializeUint64(100)]
+                [
+                  bcsToBytes(AccountAddress.fromHex(userPublicKey.address())),
+                  bcsSerializeUint64(100)
+                ]
               )
             )
             const plaintx = new RawTransaction(
-              AccountAddress.fromHex(userPublicKey),
+              AccountAddress.fromHex(userPublicKey.address()),
               BigInt(sequnceNumber),
               scriptFunctionPayload,
               BigInt(1000),
@@ -105,7 +114,7 @@ function App() {
               new ChainId(chainId)
             )
             const plaintx2 = new RawTransaction(
-              AccountAddress.fromHex(userPublicKey),
+              AccountAddress.fromHex(userPublicKey.address()),
               BigInt(sequnceNumber),
               scriptFunctionPayload,
               BigInt(1000),

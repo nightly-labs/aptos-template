@@ -1,12 +1,12 @@
-import { AptosNightly, WalletAdapter } from './types'
+import { AptosNightly, AptosPublicKey, WalletAdapter } from './types'
 import { RawTransaction } from 'aptos/dist/transaction_builder/aptos_types'
 
 export class NightlyWalletAdapter implements WalletAdapter {
-  _publicKey: string
+  _publicKey: AptosPublicKey
   _connected: boolean
   constructor() {
     this._connected = false
-    this._publicKey = '0x' + '0'.repeat(64)
+    this._publicKey = AptosPublicKey.default()
   }
 
   get connected() {
@@ -36,6 +36,7 @@ export class NightlyWalletAdapter implements WalletAdapter {
   async connect(onDisconnect?: () => void, eager?: boolean) {
     try {
       const pk = await this._provider.connect(onDisconnect, eager)
+      console.log(pk)
       this._publicKey = pk
       this._connected = true
       return pk
@@ -48,7 +49,7 @@ export class NightlyWalletAdapter implements WalletAdapter {
   async disconnect() {
     if (this._publicKey) {
       await this._provider.disconnect()
-      this._publicKey = '0x' + '0'.repeat(64)
+      this._publicKey = AptosPublicKey.default()
       this._connected = false
     }
   }
