@@ -83,7 +83,7 @@ function App() {
           }}>
           Send test 100 TestCoin
         </Button>
-        <Button
+        {/* <Button
           variant='contained'
           style={{ margin: 10 }}
           onClick={async () => {
@@ -129,16 +129,16 @@ function App() {
             }
           }}>
           Send test 2x 100 TestCoin
-        </Button>
+        </Button> */}
 
-        <Button
+        {/* <Button
           variant='contained'
           style={{ margin: 10 }}
           onClick={async () => {
             await NightlyAptos.disconnect()
           }}>
           Disconnect Aptos
-        </Button>
+        </Button> */}
       </header>
     </div>
   )
