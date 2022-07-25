@@ -56,10 +56,10 @@ function App() {
               faucetClient.getAccount(userPublicKey.address()),
               faucetClient.getChainId()
             ])
-            const token = new TypeTagStruct(StructTag.fromString('0x1::TestCoin::TestCoin'))
+            const token = new TypeTagStruct(StructTag.fromString('0x1::test_coin::TestCoin'))
             const scriptFunctionPayload = new TransactionPayloadScriptFunction(
               ScriptFunction.natual(
-                '0x1::Coin',
+                '0x1::coin',
                 'transfer',
                 [token],
                 [
