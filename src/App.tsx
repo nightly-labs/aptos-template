@@ -56,7 +56,7 @@ function App() {
               faucetClient.getAccount(userPublicKey.address()),
               faucetClient.getChainId()
             ])
-            const token = new TypeTagStruct(StructTag.fromString('0x1::test_coin::TestCoin'))
+            const token = new TypeTagStruct(StructTag.fromString('0x1::aptos_coin::AptosCoin'))
             const scriptFunctionPayload = new TransactionPayloadScriptFunction(
               ScriptFunction.natual(
                 '0x1::coin',
@@ -81,7 +81,7 @@ function App() {
             const result = await faucetClient.submitSignedBCSTransaction(bcsTxn)
             console.log('transaction hash -> ', result)
           }}>
-          Send test 100 TestCoin
+          Send test 100 AptosCoin
         </Button>
         {/* <Button
           variant='contained'
@@ -92,7 +92,7 @@ function App() {
               faucetClient.getAccount(userPublicKey.address()),
               faucetClient.getChainId()
             ])
-            const token = new TypeTagStruct(StructTag.fromString('0x1::TestCoin::TestCoin'))
+            const token = new TypeTagStruct(StructTag.fromString('0x1::aptos_coin::AptosCoin'))
             const scriptFunctionPayload = new TransactionPayloadScriptFunction(
               ScriptFunction.natual(
                 '0x1::Coin',
@@ -128,7 +128,7 @@ function App() {
               console.log(result)
             }
           }}>
-          Send test 2x 100 TestCoin
+          Send test 2x 100 AptosCoin
         </Button> */}
 
         {/* <Button
