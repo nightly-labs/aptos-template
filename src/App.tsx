@@ -1,14 +1,13 @@
 import { Typography } from '@mui/material'
 import Button from '@mui/material/Button'
 import { FaucetClient } from 'aptos'
-import { UserTransactionRequest } from 'aptos/dist/api/data-contracts'
 import {
   AccountAddress,
   ChainId,
+  EntryFunction,
   RawTransaction,
-  ScriptFunction,
   StructTag,
-  TransactionPayloadScriptFunction,
+  TransactionPayloadEntryFunction,
   TypeTagStruct
 } from 'aptos/dist/transaction_builder/aptos_types'
 import { bcsSerializeUint64, bcsToBytes } from 'aptos/dist/transaction_builder/bcs'
@@ -57,8 +56,8 @@ function App() {
               faucetClient.getChainId()
             ])
             const token = new TypeTagStruct(StructTag.fromString('0x1::aptos_coin::AptosCoin'))
-            const scriptFunctionPayload = new TransactionPayloadScriptFunction(
-              ScriptFunction.natual(
+            const scriptFunctionPayload = new TransactionPayloadEntryFunction(
+              EntryFunction.natual(
                 '0x1::coin',
                 'transfer',
                 [token],
