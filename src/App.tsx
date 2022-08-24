@@ -57,13 +57,17 @@ function App() {
             ])
             const token = new TypeTagStruct(StructTag.fromString('0x1::aptos_coin::AptosCoin'))
             const scriptFunctionPayload = new TransactionPayloadEntryFunction(
-              EntryFunction.natual(
+              EntryFunction.natural(
                 '0x1::coin',
                 'transfer',
                 [token],
                 [
-                  bcsToBytes(AccountAddress.fromHex(userPublicKey.address())),
-                  bcsSerializeUint64(100)
+                  bcsToBytes(
+                    AccountAddress.fromHex(
+                      '0x34aa3f5a088f6cf8531c43138aaef7ef6ed6eb9ad23faeab1f161207d8020d21'
+                    )
+                  ),
+                  bcsSerializeUint64(1_000)
                 ]
               )
             )
@@ -73,16 +77,16 @@ function App() {
               scriptFunctionPayload,
               BigInt(1000),
               BigInt(1),
-              BigInt(Math.floor(Date.now() / 1000) + 10),
+              BigInt(Math.floor(Date.now() / 1000) + 100000),
               new ChainId(chainId)
             )
             const bcsTxn = await NightlyAptos.signTransaction(rawTxn)
             const result = await faucetClient.submitSignedBCSTransaction(bcsTxn)
             console.log('transaction hash -> ', result)
           }}>
-          Send test 100 AptosCoin
+          Send test 1000 AptosCoin
         </Button>
-        {/* <Button
+        <Button
           variant='contained'
           style={{ margin: 10 }}
           onClick={async () => {
@@ -92,14 +96,18 @@ function App() {
               faucetClient.getChainId()
             ])
             const token = new TypeTagStruct(StructTag.fromString('0x1::aptos_coin::AptosCoin'))
-            const scriptFunctionPayload = new TransactionPayloadScriptFunction(
-              ScriptFunction.natual(
-                '0x1::Coin',
+            const scriptFunctionPayload = new TransactionPayloadEntryFunction(
+              EntryFunction.natural(
+                '0x1::coin',
                 'transfer',
                 [token],
                 [
-                  bcsToBytes(AccountAddress.fromHex(userPublicKey.address())),
-                  bcsSerializeUint64(100)
+                  bcsToBytes(
+                    AccountAddress.fromHex(
+                      '0x34aa3f5a088f6cf8531c43138aaef7ef6ed6eb9ad23faeab1f161207d8020d21'
+                    )
+                  ),
+                  bcsSerializeUint64(1_000)
                 ]
               )
             )
@@ -114,7 +122,7 @@ function App() {
             )
             const plaintx2 = new RawTransaction(
               AccountAddress.fromHex(userPublicKey.address()),
-              BigInt(sequnceNumber),
+              BigInt((parseFloat(sequnceNumber) + 1).toString()),
               scriptFunctionPayload,
               BigInt(1000),
               BigInt(1),
@@ -127,8 +135,8 @@ function App() {
               console.log(result)
             }
           }}>
-          Send test 2x 100 AptosCoin
-        </Button> */}
+          Send test 2x 1000 AptosCoin
+        </Button>
 
         {/* <Button
           variant='contained'
