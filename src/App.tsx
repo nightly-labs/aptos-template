@@ -75,8 +75,8 @@ function App() {
               AccountAddress.fromHex(userPublicKey.address()),
               BigInt(sequnceNumber),
               scriptFunctionPayload,
-              BigInt(1000),
-              BigInt(1),
+              BigInt(2000),
+              BigInt(0),
               BigInt(Math.floor(Date.now() / 1000) + 100000),
               new ChainId(chainId)
             )
@@ -115,8 +115,8 @@ function App() {
               AccountAddress.fromHex(userPublicKey.address()),
               BigInt(sequnceNumber),
               scriptFunctionPayload,
-              BigInt(1000),
-              BigInt(1),
+              BigInt(2000),
+              BigInt(0),
               BigInt(Math.floor(Date.now() / 1000) + 10),
               new ChainId(chainId)
             )
@@ -124,8 +124,8 @@ function App() {
               AccountAddress.fromHex(userPublicKey.address()),
               BigInt((parseFloat(sequnceNumber) + 1).toString()),
               scriptFunctionPayload,
-              BigInt(1000),
-              BigInt(1),
+              BigInt(2000),
+              BigInt(0),
               BigInt(Math.floor(Date.now() / 1000) + 10),
               new ChainId(chainId)
             )
