@@ -21,6 +21,7 @@ const NightlyAptos = new NightlyWalletAdapter()
 const TESTNET_URL = 'https://fullnode.devnet.aptoslabs.com'
 const FAUCET_URL = 'https://faucet.devnet.aptoslabs.com'
 const faucetClient = new FaucetClient(TESTNET_URL, FAUCET_URL)
+const ADDRESS_TO_SEND_COIN = '0x507e4b853aa11f93fcd53a668240a5ea131a85003ed7144e20da367b6528fc87'
 function App() {
   const [userPublicKey, setUserPublicKey] = useState<AptosPublicKey | undefined>(undefined)
   return (
@@ -49,7 +50,10 @@ function App() {
           variant='contained'
           style={{ margin: 10 }}
           onClick={async () => {
-            if (!userPublicKey) return
+            if (!userPublicKey) {
+              console.log('Error with connected')
+              return
+            }
 
             const [{ sequence_number: sequnceNumber }, chainId] = await Promise.all([
               faucetClient.getAccount(userPublicKey.address()),
@@ -62,11 +66,7 @@ function App() {
                 'transfer',
                 [token],
                 [
-                  bcsToBytes(
-                    AccountAddress.fromHex(
-                      '0x34aa3f5a088f6cf8531c43138aaef7ef6ed6eb9ad23faeab1f161207d8020d21'
-                    )
-                  ),
+                  bcsToBytes(AccountAddress.fromHex(ADDRESS_TO_SEND_COIN)),
                   bcsSerializeUint64(1_000)
                 ]
               )
@@ -90,7 +90,10 @@ function App() {
           variant='contained'
           style={{ margin: 10 }}
           onClick={async () => {
-            if (!userPublicKey) return
+            if (!userPublicKey) {
+              console.log('Error with connected')
+              return
+            }
             const [{ sequence_number: sequnceNumber }, chainId] = await Promise.all([
               faucetClient.getAccount(userPublicKey.address()),
               faucetClient.getChainId()
@@ -102,11 +105,7 @@ function App() {
                 'transfer',
                 [token],
                 [
-                  bcsToBytes(
-                    AccountAddress.fromHex(
-                      '0x34aa3f5a088f6cf8531c43138aaef7ef6ed6eb9ad23faeab1f161207d8020d21'
-                    )
-                  ),
+                  bcsToBytes(AccountAddress.fromHex(ADDRESS_TO_SEND_COIN)),
                   bcsSerializeUint64(1_000)
                 ]
               )
@@ -142,7 +141,10 @@ function App() {
           color='primary'
           style={{ margin: 10 }}
           onClick={async () => {
-            if (!userPublicKey) return
+            if (!userPublicKey) {
+              console.log('Error with connected')
+              return
+            }
             const messageToSign =
               'I like turtles I like turtlesI like turtlesI like turtlesI like turtles I like turtlesI like turtlesI like turtlesI like turtles I like turtlesI like turtlesI like turtlesI like turtles I like turtlesI like turtlesI like turtlesI like turtles I like turtlesI like turtlesI like turtlesI like turtles I like turtlesI like turtlesI like turtlesI like turtles I like turtlesI like turtlesI like turtlesI like turtles I like turtlesI like turtlesI like turtlesI like turtles I like turtlesI like turtlesI like turtlesI like turtles I like turtlesI like turtlesI like turtlesI like turtles I like turtlesI like turtlesI like turtlesI like turtles I like turtlesI like turtlesI like turtlesI like turtles I like turtlesI like turtlesI like turtlesI like turtles I like turtlesI like turtlesI like turtlesI like turtles I like turtlesI like turtlesI like turtlesI like turtles I like turtlesI like turtlesI like turtlesI like turtles I like turtlesI like turtlesI like turtlesI like turtles I like turtlesI like turtlesI like turtlesI like turtles I like turtlesI like turtlesI like turtlesI like turtles I like turtlesI like turtlesI like turtlesI like turtles I like turtlesI like turtlesI like turtlesI like turtles I like turtlesI like turtlesI like turtlesI like turtles I like turtlesI like turtlesI like turtlesI like turtles I like turtlesI like turtlesI like turtlesI like turtles I like turtlesI like turtlesI like turtlesI like turtles I like turtlesI like turtlesI like turtlesI like turtles I like turtlesI like turtlesI like turtles'
             const signedMessage = await NightlyAptos.signMessage(messageToSign)
