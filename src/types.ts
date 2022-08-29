@@ -27,6 +27,7 @@ export declare class AptosNightly {
   disconnect(): Promise<void>
   signTransaction(tx: RawTransaction): Promise<Uint8Array>
   signAllTransactions(txs: RawTransaction[]): Promise<Uint8Array[]>
+  signMessage(msg: string): Promise<Uint8Array>
 }
 
 export class AptosPublicKey {
