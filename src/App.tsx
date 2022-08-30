@@ -14,6 +14,7 @@ import { bcsSerializeUint64, bcsToBytes } from 'aptos/dist/transaction_builder/b
 import { Buffer } from 'buffer'
 import { useState } from 'react'
 import './App.css'
+import { CreateCollectionButton } from './CreateCollection'
 import { NightlyWalletAdapter } from './nightly'
 import { AptosPublicKey } from './types'
 
@@ -77,7 +78,7 @@ function App() {
               scriptFunctionPayload,
               BigInt(1000),
               BigInt(1),
-              BigInt(Math.floor(Date.now() / 1000) + 100000),
+              BigInt(Math.floor(Date.now() / 1000)),
               new ChainId(chainId)
             )
             const bcsTxn = await NightlyAptos.signTransaction(rawTxn)
@@ -137,7 +138,7 @@ function App() {
           }}>
           Send test 2x 1000 AptosCoin
         </Button>
-
+        <CreateCollectionButton userPublicKey={userPublicKey} NightlyAptos={NightlyAptos} />
         {/* <Button
           variant='contained'
           style={{ margin: 10 }}
