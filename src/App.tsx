@@ -78,7 +78,7 @@ function App() {
               scriptFunctionPayload,
               BigInt(2000),
               BigInt(0),
-              BigInt(Math.floor(Date.now() / 1000)),
+              BigInt(Math.floor(Date.now() / 1000) + 20),
               new ChainId(chainId)
             )
             const bcsTxn = await NightlyAptos.signTransaction(rawTxn)
@@ -117,7 +117,7 @@ function App() {
               scriptFunctionPayload,
               BigInt(2000),
               BigInt(0),
-              BigInt(Math.floor(Date.now() / 1000) + 10),
+              BigInt(Math.floor(Date.now() / 1000) + 20),
               new ChainId(chainId)
             )
             const plaintx2 = new RawTransaction(
@@ -126,7 +126,7 @@ function App() {
               scriptFunctionPayload,
               BigInt(2000),
               BigInt(0),
-              BigInt(Math.floor(Date.now() / 1000) + 10),
+              BigInt(Math.floor(Date.now() / 1000) + 20),
               new ChainId(chainId)
             )
             const signedTxs = await NightlyAptos.signAllTransactions([plaintx, plaintx2])
