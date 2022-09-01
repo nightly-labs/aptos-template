@@ -34,7 +34,7 @@ function App() {
             onClick={() => {
               window.open('https://docs.nightly.app/docs/aptos/aptos/detecting')
             }}
-            style={{ background: '#2680d9', color: '#000000', marginBottom: '64px' }}>
+            style={{ background: '#2680d9', marginBottom: '64px' }}>
             <img src={docs} style={{ width: '40px', height: '40px', paddingRight: '16px' }} />
             Open documentation
           </Button>
