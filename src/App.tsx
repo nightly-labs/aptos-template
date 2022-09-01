@@ -11,12 +11,12 @@ import {
   TypeTagStruct
 } from 'aptos/dist/transaction_builder/aptos_types'
 import { bcsSerializeUint64, bcsToBytes } from 'aptos/dist/transaction_builder/bcs'
-import { Buffer } from 'buffer'
 import { useState } from 'react'
 import './App.css'
 import { CreateCollectionButton } from './CreateCollection'
 import { NightlyWalletAdapter } from './nightly'
 import { AptosPublicKey } from './types'
+import docs from './docs.png'
 
 const NightlyAptos = new NightlyWalletAdapter()
 const TESTNET_URL = 'https://fullnode.devnet.aptoslabs.com'
@@ -28,6 +28,17 @@ function App() {
   return (
     <div className='App'>
       <header className='App-header'>
+        <div>
+          <Button
+            onClick={() => {
+              window.open('https://docs.nightly.app/docs/aptos/aptos/detecting')
+            }}
+            style={{ background: '#2680d9', color: '#000000', marginBottom: '32px' }}>
+            <img src={docs} style={{ width: '40px', height: '40px', paddingRight: '16px' }} />
+            Open documentation
+          </Button>
+        </div>
+
         <Typography>
           {userPublicKey ? `Hello, ${userPublicKey.address()}` : 'Hello, stranger'}
         </Typography>
