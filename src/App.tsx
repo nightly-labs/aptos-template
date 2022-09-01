@@ -30,10 +30,11 @@ function App() {
       <header className='App-header'>
         <div>
           <Button
+            variant='contained'
             onClick={() => {
               window.open('https://docs.nightly.app/docs/aptos/aptos/detecting')
             }}
-            style={{ background: '#2680d9', color: '#000000', marginBottom: '32px' }}>
+            style={{ background: '#2680d9', color: '#000000', marginBottom: '64px' }}>
             <img src={docs} style={{ width: '40px', height: '40px', paddingRight: '16px' }} />
             Open documentation
           </Button>
