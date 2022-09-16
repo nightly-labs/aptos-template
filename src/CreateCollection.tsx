@@ -3,23 +3,12 @@ import {
   AptosClient,
   FaucetClient,
   HexString,
-  TokenClient,
-  TransactionBuilder,
-  TransactionBuilderABI
+  TransactionBuilderABI,
+  TxnBuilderTypes,
+  Types
 } from 'aptos'
-import { Uint64 } from 'aptos/dist/transaction_builder/bcs/types'
 import { AptosPublicKey } from './types'
-import {
-  AccountAddress,
-  ChainId,
-  EntryFunction,
-  RawTransaction,
-  StructTag,
-  TransactionPayloadEntryFunction,
-  TypeTagStruct
-} from 'aptos/dist/transaction_builder/aptos_types'
 import { NightlyWalletAdapter } from './nightly'
-import { PendingTransaction } from 'aptos/dist/generated'
 import { fenecImages, TOKEN_ABIS } from './utils/const'
 
 const TESTNET_URL = 'https://fullnode.devnet.aptoslabs.com'
@@ -40,14 +29,11 @@ export const CreateCollectionButton: React.FC<{
   const createCollection = async () => {
     if (!userPublicKey) return
     const faucetClient = new FaucetClient(TESTNET_URL, FAUCET_URL)
-    faucetClient.fundAccount(userPublicKey.address(), 1_000_000)
-    faucetClient.fundAccount(userPublicKey.address(), 1_000_000)
-    faucetClient.fundAccount(userPublicKey.address(), 1_000_000)
-    faucetClient.fundAccount(userPublicKey.address(), 1_000_000)
-    faucetClient.fundAccount(userPublicKey.address(), 1_000_000)
-    faucetClient.fundAccount(userPublicKey.address(), 1_000_000)
-    faucetClient.fundAccount(userPublicKey.address(), 1_000_000)
-    faucetClient.fundAccount(userPublicKey.address(), 1_000_000)
+    // give faucet
+    for (let i = 0; i < 5; i++) {
+      await faucetClient.fundAccount(userPublicKey.address(), 1_000_000)
+    }
+
     const collectionName = 'Funny Fennec ' + (Math.floor(Math.random() * 1000) + 1).toString()
     try {
       const createCollectionPayload = transactionBuilderABI.buildTransactionPayload(
@@ -65,17 +51,17 @@ export const CreateCollectionButton: React.FC<{
         aptosClient.getAccount(userPublicKey.address()),
         aptosClient.getChainId()
       ])
-      const rawTxn = new RawTransaction(
-        AccountAddress.fromHex(userPublicKey.address()),
+      const rawTxn = new TxnBuilderTypes.RawTransaction(
+        TxnBuilderTypes.AccountAddress.fromHex(userPublicKey.address()),
         BigInt(sequnceNumber),
         createCollectionPayload,
         BigInt(2000),
         BigInt(1),
         BigInt(Math.floor(Date.now() / 1000) + 120),
-        new ChainId(chainId)
+        new TxnBuilderTypes.ChainId(chainId)
       )
       const signedTx = await NightlyAptos.signTransaction(rawTxn)
-      const arrayCreateTokens: RawTransaction[] = []
+      const arrayCreateTokens: TxnBuilderTypes.RawTransaction[] = []
 
       const result = await aptosClient.submitSignedBCSTransaction(signedTx)
       console.log('Create collection : ', result)
@@ -106,22 +92,22 @@ export const CreateCollectionButton: React.FC<{
           ]
         )
 
-        const rawTxn = new RawTransaction(
-          AccountAddress.fromHex(userPublicKey.address()),
+        const rawTxn = new TxnBuilderTypes.RawTransaction(
+          TxnBuilderTypes.AccountAddress.fromHex(userPublicKey.address()),
           BigInt(+sequnceNumber + +x + 1),
           createTokenPayload,
           BigInt(2000),
           BigInt(1),
           BigInt(Math.floor(Date.now() / 1000) + 120),
-          new ChainId(chainId)
+          new TxnBuilderTypes.ChainId(chainId)
         )
         arrayCreateTokens.push(rawTxn)
       }
 
       const signedTxsCreate = await NightlyAptos.signAllTransactions(arrayCreateTokens)
-      const promiseCreate: Array<Promise<PendingTransaction>> = []
+      const promiseCreate: Array<Promise<Types.PendingTransaction>> = []
 
-      const arrayMutableTokens: RawTransaction[] = []
+      const arrayMutableTokens: TxnBuilderTypes.RawTransaction[] = []
       for (const signedCreateTx of signedTxsCreate) {
         await sleep(1000)
         promiseCreate.push(aptosClient.submitSignedBCSTransaction(signedCreateTx))
@@ -148,21 +134,21 @@ export const CreateCollectionButton: React.FC<{
           ]
         )
 
-        const rawTxnMutable = new RawTransaction(
-          AccountAddress.fromHex(userPublicKey.address()),
+        const rawTxnMutable = new TxnBuilderTypes.RawTransaction(
+          TxnBuilderTypes.AccountAddress.fromHex(userPublicKey.address()),
           BigInt(+sequnceNumber + x + NUMBER_ITEMS + 1),
           mutableTokenPayload,
           BigInt(2000),
           BigInt(1),
           BigInt(Math.floor(Date.now() / 1000) + 120),
-          new ChainId(chainId)
+          new TxnBuilderTypes.ChainId(chainId)
         )
 
         arrayMutableTokens.push(rawTxnMutable)
       }
 
       const signedTxsMutable = await NightlyAptos.signAllTransactions(arrayMutableTokens)
-      const promise: Array<Promise<PendingTransaction>> = []
+      const promise: Array<Promise<Types.PendingTransaction>> = []
       for (const signedMutableTx of signedTxsMutable) {
         await sleep(1000)
         promise.push(aptosClient.submitSignedBCSTransaction(signedMutableTx))

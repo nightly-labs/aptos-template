@@ -1,16 +1,6 @@
 import { Typography } from '@mui/material'
 import Button from '@mui/material/Button'
-import { FaucetClient } from 'aptos'
-import {
-  AccountAddress,
-  ChainId,
-  EntryFunction,
-  RawTransaction,
-  StructTag,
-  TransactionPayloadEntryFunction,
-  TypeTagStruct
-} from 'aptos/dist/transaction_builder/aptos_types'
-import { bcsSerializeUint64, bcsToBytes } from 'aptos/dist/transaction_builder/bcs'
+import { FaucetClient, TxnBuilderTypes, BCS } from 'aptos'
 import { useState } from 'react'
 import './App.css'
 import { CreateCollectionButton } from './CreateCollection'
@@ -72,26 +62,28 @@ function App() {
               faucetClient.getAccount(userPublicKey.address()),
               faucetClient.getChainId()
             ])
-            const token = new TypeTagStruct(StructTag.fromString('0x1::aptos_coin::AptosCoin'))
-            const scriptFunctionPayload = new TransactionPayloadEntryFunction(
-              EntryFunction.natural(
+            const token = new TxnBuilderTypes.TypeTagStruct(
+              TxnBuilderTypes.StructTag.fromString('0x1::aptos_coin::AptosCoin')
+            )
+            const scriptFunctionPayload = new TxnBuilderTypes.TransactionPayloadEntryFunction(
+              TxnBuilderTypes.EntryFunction.natural(
                 '0x1::coin',
                 'transfer',
                 [token],
                 [
-                  bcsToBytes(AccountAddress.fromHex(ADDRESS_TO_SEND_COIN)),
-                  bcsSerializeUint64(1_000)
+                  BCS.bcsToBytes(TxnBuilderTypes.AccountAddress.fromHex(ADDRESS_TO_SEND_COIN)),
+                  BCS.bcsSerializeUint64(1_000)
                 ]
               )
             )
-            const rawTxn = new RawTransaction(
-              AccountAddress.fromHex(userPublicKey.address()),
+            const rawTxn = new TxnBuilderTypes.RawTransaction(
+              TxnBuilderTypes.AccountAddress.fromHex(userPublicKey.address()),
               BigInt(sequnceNumber),
               scriptFunctionPayload,
               BigInt(2000),
               BigInt(0),
               BigInt(Math.floor(Date.now() / 1000) + 20),
-              new ChainId(chainId)
+              new TxnBuilderTypes.ChainId(chainId)
             )
             const bcsTxn = await NightlyAptos.signTransaction(rawTxn)
             const result = await faucetClient.submitSignedBCSTransaction(bcsTxn)
@@ -111,35 +103,37 @@ function App() {
               faucetClient.getAccount(userPublicKey.address()),
               faucetClient.getChainId()
             ])
-            const token = new TypeTagStruct(StructTag.fromString('0x1::aptos_coin::AptosCoin'))
-            const scriptFunctionPayload = new TransactionPayloadEntryFunction(
-              EntryFunction.natural(
+            const token = new TxnBuilderTypes.TypeTagStruct(
+              TxnBuilderTypes.StructTag.fromString('0x1::aptos_coin::AptosCoin')
+            )
+            const scriptFunctionPayload = new TxnBuilderTypes.TransactionPayloadEntryFunction(
+              TxnBuilderTypes.EntryFunction.natural(
                 '0x1::coin',
                 'transfer',
                 [token],
                 [
-                  bcsToBytes(AccountAddress.fromHex(ADDRESS_TO_SEND_COIN)),
-                  bcsSerializeUint64(1_000)
+                  BCS.bcsToBytes(TxnBuilderTypes.AccountAddress.fromHex(ADDRESS_TO_SEND_COIN)),
+                  BCS.bcsSerializeUint64(1_000)
                 ]
               )
             )
-            const plaintx = new RawTransaction(
-              AccountAddress.fromHex(userPublicKey.address()),
+            const plaintx = new TxnBuilderTypes.RawTransaction(
+              TxnBuilderTypes.AccountAddress.fromHex(userPublicKey.address()),
               BigInt(sequnceNumber),
               scriptFunctionPayload,
               BigInt(2000),
               BigInt(0),
               BigInt(Math.floor(Date.now() / 1000) + 20),
-              new ChainId(chainId)
+              new TxnBuilderTypes.ChainId(chainId)
             )
-            const plaintx2 = new RawTransaction(
-              AccountAddress.fromHex(userPublicKey.address()),
+            const plaintx2 = new TxnBuilderTypes.RawTransaction(
+              TxnBuilderTypes.AccountAddress.fromHex(userPublicKey.address()),
               BigInt((parseFloat(sequnceNumber) + 1).toString()),
               scriptFunctionPayload,
               BigInt(2000),
               BigInt(0),
               BigInt(Math.floor(Date.now() / 1000) + 20),
-              new ChainId(chainId)
+              new TxnBuilderTypes.ChainId(chainId)
             )
             const signedTxs = await NightlyAptos.signAllTransactions([plaintx, plaintx2])
             for (const tx of signedTxs) {
