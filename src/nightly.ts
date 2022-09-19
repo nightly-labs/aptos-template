@@ -1,5 +1,5 @@
 import { AptosNightly, AptosPublicKey, WalletAdapter } from './types'
-import { RawTransaction } from 'aptos/dist/transaction_builder/aptos_types'
+import { TxnBuilderTypes } from 'aptos'
 
 export class NightlyWalletAdapter implements WalletAdapter {
   _publicKey: AptosPublicKey
@@ -13,7 +13,9 @@ export class NightlyWalletAdapter implements WalletAdapter {
     return this._connected
   }
 
-  public async signAllTransactions(transactions: RawTransaction[]): Promise<Uint8Array[]> {
+  public async signAllTransactions(
+    transactions: TxnBuilderTypes.RawTransaction[]
+  ): Promise<Uint8Array[]> {
     return await this._provider.signAllTransactions(transactions)
   }
 
@@ -29,7 +31,7 @@ export class NightlyWalletAdapter implements WalletAdapter {
     return this._publicKey
   }
 
-  async signTransaction(transaction: RawTransaction) {
+  async signTransaction(transaction: TxnBuilderTypes.RawTransaction) {
     return await this._provider.signTransaction(transaction)
   }
 
