@@ -44,7 +44,7 @@ function App() {
 
             setUserPublicKey(value)
             console.log(value.toString())
-            await Promise.all([faucetClient.fundAccount(value.address(), 10_000)])
+            await Promise.all([faucetClient.fundAccount(value.address(), 100000000)])
           }}>
           Connect Aptos
         </Button>
@@ -80,8 +80,8 @@ function App() {
               TxnBuilderTypes.AccountAddress.fromHex(userPublicKey.address()),
               BigInt(sequnceNumber),
               scriptFunctionPayload,
-              BigInt(2000),
-              BigInt(0),
+              BigInt(100000),
+              BigInt(100),
               BigInt(Math.floor(Date.now() / 1000) + 20),
               new TxnBuilderTypes.ChainId(chainId)
             )
@@ -121,8 +121,8 @@ function App() {
               TxnBuilderTypes.AccountAddress.fromHex(userPublicKey.address()),
               BigInt(sequnceNumber),
               scriptFunctionPayload,
-              BigInt(2000),
-              BigInt(0),
+              BigInt(100000),
+              BigInt(100),
               BigInt(Math.floor(Date.now() / 1000) + 20),
               new TxnBuilderTypes.ChainId(chainId)
             )
@@ -130,8 +130,8 @@ function App() {
               TxnBuilderTypes.AccountAddress.fromHex(userPublicKey.address()),
               BigInt((parseFloat(sequnceNumber) + 1).toString()),
               scriptFunctionPayload,
-              BigInt(2000),
-              BigInt(0),
+              BigInt(100000),
+              BigInt(100),
               BigInt(Math.floor(Date.now() / 1000) + 20),
               new TxnBuilderTypes.ChainId(chainId)
             )

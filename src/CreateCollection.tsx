@@ -30,8 +30,8 @@ export const CreateCollectionButton: React.FC<{
     if (!userPublicKey) return
     const faucetClient = new FaucetClient(TESTNET_URL, FAUCET_URL)
     // give faucet
-    for (let i = 0; i < 5; i++) {
-      await faucetClient.fundAccount(userPublicKey.address(), 1_000_000)
+    for (let i = 0; i < 3; i++) {
+      await faucetClient.fundAccount(userPublicKey.address(), 100000000)
     }
 
     const collectionName = 'Funny Fennec ' + (Math.floor(Math.random() * 1000) + 1).toString()
@@ -42,7 +42,7 @@ export const CreateCollectionButton: React.FC<{
         [
           collectionName,
           'We invite you to test Nightly Wallet"',
-          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSWEkIQ_TH_lgwJa6M5k4zUJM2QDOS0LmLoCg&usqp=CAU',
+          fenecImages[(Math.floor(Math.random() * fenecImages.length) + 1) % fenecImages.length],
           10000,
           [false, false, false]
         ]
@@ -55,8 +55,8 @@ export const CreateCollectionButton: React.FC<{
         TxnBuilderTypes.AccountAddress.fromHex(userPublicKey.address()),
         BigInt(sequnceNumber),
         createCollectionPayload,
-        BigInt(2000),
-        BigInt(1),
+        BigInt(100000),
+        BigInt(100),
         BigInt(Math.floor(Date.now() / 1000) + 120),
         new TxnBuilderTypes.ChainId(chainId)
       )
@@ -96,8 +96,8 @@ export const CreateCollectionButton: React.FC<{
           TxnBuilderTypes.AccountAddress.fromHex(userPublicKey.address()),
           BigInt(+sequnceNumber + +x + 1),
           createTokenPayload,
-          BigInt(2000),
-          BigInt(1),
+          BigInt(100000),
+          BigInt(100),
           BigInt(Math.floor(Date.now() / 1000) + 120),
           new TxnBuilderTypes.ChainId(chainId)
         )
@@ -138,8 +138,8 @@ export const CreateCollectionButton: React.FC<{
           TxnBuilderTypes.AccountAddress.fromHex(userPublicKey.address()),
           BigInt(+sequnceNumber + x + NUMBER_ITEMS + 1),
           mutableTokenPayload,
-          BigInt(2000),
-          BigInt(1),
+          BigInt(100000),
+          BigInt(100),
           BigInt(Math.floor(Date.now() / 1000) + 120),
           new TxnBuilderTypes.ChainId(chainId)
         )
