@@ -1,7 +1,6 @@
-import { RawTransaction } from 'aptos/dist/transaction_builder/aptos_types'
 import * as SHA3 from 'js-sha3'
 import base58 from 'bs58'
-import { TransactionPayload } from 'aptos/dist/generated'
+import { TransactionPayload } from 'aptos/src/generated'
 
 export interface WalletAdapter {
   publicKey: AptosPublicKey
@@ -28,6 +27,7 @@ export declare class AptosNightly {
   disconnect(): Promise<void>
   signTransaction(tx: TransactionPayload): Promise<Uint8Array>
   signAllTransactions(txs: TransactionPayload[]): Promise<Uint8Array[]>
+  signMessage(msg: string): Promise<Uint8Array>
 }
 
 export class AptosPublicKey {

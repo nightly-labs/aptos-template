@@ -1,21 +1,36 @@
 import { Typography } from '@mui/material'
 import Button from '@mui/material/Button'
 import { FaucetClient } from 'aptos'
-
 import { useState } from 'react'
 import './App.css'
+import { CreateCollectionButton } from './CreateCollection'
 import { NightlyWalletAdapter } from './nightly'
 import { AptosPublicKey } from './types'
 import { TransactionPayload } from 'aptos/src/generated'
+import docs from './docs.png'
+
 const NightlyAptos = new NightlyWalletAdapter()
 const TESTNET_URL = 'https://rpc.aptos.nightly.app'
 const FAUCET_URL = 'https://faucet.devnet.aptoslabs.com'
 const faucetClient = new FaucetClient(TESTNET_URL, FAUCET_URL)
+const ADDRESS_TO_SEND_COIN = '0x507e4b853aa11f93fcd53a668240a5ea131a85003ed7144e20da367b6528fc87'
 function App() {
   const [userPublicKey, setUserPublicKey] = useState<AptosPublicKey | undefined>(undefined)
   return (
     <div className='App'>
       <header className='App-header'>
+        <div>
+          <Button
+            variant='contained'
+            onClick={() => {
+              window.open('https://docs.nightly.app/docs/aptos/aptos/detecting')
+            }}
+            style={{ background: '#2680d9', marginBottom: '64px' }}>
+            <img src={docs} style={{ width: '40px', height: '40px', paddingRight: '16px' }} />
+            Open documentation
+          </Button>
+        </div>
+
         <Typography>
           {userPublicKey ? `Hello, ${userPublicKey.address()}` : 'Hello, stranger'}
         </Typography>
@@ -103,11 +118,7 @@ function App() {
                 'transfer',
                 [token],
                 [
-                  bcsToBytes(
-                    AccountAddress.fromHex(
-                      '0x34aa3f5a088f6cf8531c43138aaef7ef6ed6eb9ad23faeab1f161207d8020d21'
-                    )
-                  ),
+                  bcsToBytes(AccountAddress.fromHex(ADDRESS_TO_SEND_COIN)),
                   bcsSerializeUint64(1_000)
                 ]
               )
@@ -116,18 +127,18 @@ function App() {
               AccountAddress.fromHex(userPublicKey.address()),
               BigInt(sequnceNumber),
               scriptFunctionPayload,
-              BigInt(1000),
-              BigInt(1),
-              BigInt(Math.floor(Date.now() / 1000) + 10),
+              BigInt(2000),
+              BigInt(0),
+              BigInt(Math.floor(Date.now() / 1000) + 20),
               new ChainId(chainId)
             )
             const plaintx2 = new RawTransaction(
               AccountAddress.fromHex(userPublicKey.address()),
               BigInt((parseFloat(sequnceNumber) + 1).toString()),
               scriptFunctionPayload,
-              BigInt(1000),
-              BigInt(1),
-              BigInt(Math.floor(Date.now() / 1000) + 10),
+              BigInt(2000),
+              BigInt(0),
+              BigInt(Math.floor(Date.now() / 1000) + 20),
               new ChainId(chainId)
             )
             const signedTxs = await NightlyAptos.signAllTransactions([plaintx, plaintx2])
@@ -137,7 +148,24 @@ function App() {
             }
           }}>
           Send test 2x 1000 AptosCoin
-        </Button> */}
+        </Button>
+        <Button
+          variant='contained'
+          color='primary'
+          style={{ margin: 10 }}
+          onClick={async () => {
+            if (!userPublicKey) {
+              console.log('Error with connected')
+              return
+            }
+            const messageToSign =
+              'I like turtles I like turtlesI like turtlesI like turtlesI like turtles I like turtlesI like turtlesI like turtlesI like turtles I like turtlesI like turtlesI like turtlesI like turtles I like turtlesI like turtlesI like turtlesI like turtles I like turtlesI like turtlesI like turtlesI like turtles I like turtlesI like turtlesI like turtlesI like turtles I like turtlesI like turtlesI like turtlesI like turtles I like turtlesI like turtlesI like turtlesI like turtles I like turtlesI like turtlesI like turtlesI like turtles I like turtlesI like turtlesI like turtlesI like turtles I like turtlesI like turtlesI like turtlesI like turtles I like turtlesI like turtlesI like turtlesI like turtles I like turtlesI like turtlesI like turtlesI like turtles I like turtlesI like turtlesI like turtlesI like turtles I like turtlesI like turtlesI like turtlesI like turtles I like turtlesI like turtlesI like turtlesI like turtles I like turtlesI like turtlesI like turtlesI like turtles I like turtlesI like turtlesI like turtlesI like turtles I like turtlesI like turtlesI like turtlesI like turtles I like turtlesI like turtlesI like turtlesI like turtles I like turtlesI like turtlesI like turtlesI like turtles I like turtlesI like turtlesI like turtlesI like turtles I like turtlesI like turtlesI like turtlesI like turtles I like turtlesI like turtlesI like turtlesI like turtles I like turtlesI like turtlesI like turtlesI like turtles I like turtlesI like turtlesI like turtlesI like turtles I like turtlesI like turtlesI like turtles'
+            const signedMessage = await NightlyAptos.signMessage(messageToSign)
+            console.log(signedMessage)
+          }}>
+          Sign Message
+        </Button>
+        <CreateCollectionButton userPublicKey={userPublicKey} NightlyAptos={NightlyAptos} />
 
         {/* <Button
           variant='contained'
