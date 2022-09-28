@@ -1,12 +1,13 @@
 import { RawTransaction } from 'aptos/dist/transaction_builder/aptos_types'
 import * as SHA3 from 'js-sha3'
 import base58 from 'bs58'
+import { TransactionPayload } from 'aptos/dist/generated'
 
 export interface WalletAdapter {
   publicKey: AptosPublicKey
   connected: boolean
-  signTransaction: (transaction: RawTransaction) => Promise<Uint8Array>
-  signAllTransactions: (transaction: RawTransaction[]) => Promise<Uint8Array[]>
+  signTransaction: (transaction: TransactionPayload) => Promise<Uint8Array>
+  signAllTransactions: (transaction: TransactionPayload[]) => Promise<Uint8Array[]>
   connect: () => any
   disconnect: () => any
 }
@@ -25,8 +26,8 @@ export declare class AptosNightly {
   constructor(eventMap: Map<string, (data: any) => any>)
   connect(onDisconnect?: () => void, eagerConnect?: boolean): Promise<AptosPublicKey>
   disconnect(): Promise<void>
-  signTransaction(tx: RawTransaction): Promise<Uint8Array>
-  signAllTransactions(txs: RawTransaction[]): Promise<Uint8Array[]>
+  signTransaction(tx: TransactionPayload): Promise<Uint8Array>
+  signAllTransactions(txs: TransactionPayload[]): Promise<Uint8Array[]>
 }
 
 export class AptosPublicKey {
