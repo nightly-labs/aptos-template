@@ -102,53 +102,7 @@ function App() {
           }}>
           Send test 1000 AptosCoin x2
         </Button>
-        {/* <Button
-          variant='contained'
-          style={{ margin: 10 }}
-          onClick={async () => {
-            if (!userPublicKey) return
-            const [{ sequence_number: sequnceNumber }, chainId] = await Promise.all([
-              faucetClient.getAccount(userPublicKey.address()),
-              faucetClient.getChainId()
-            ])
-            const token = new TypeTagStruct(StructTag.fromString('0x1::aptos_coin::AptosCoin'))
-            const scriptFunctionPayload = new TransactionPayloadEntryFunction(
-              EntryFunction.natural(
-                '0x1::coin',
-                'transfer',
-                [token],
-                [
-                  bcsToBytes(AccountAddress.fromHex(ADDRESS_TO_SEND_COIN)),
-                  bcsSerializeUint64(1_000)
-                ]
-              )
-            )
-            const plaintx = new RawTransaction(
-              AccountAddress.fromHex(userPublicKey.address()),
-              BigInt(sequnceNumber),
-              scriptFunctionPayload,
-              BigInt(2000),
-              BigInt(0),
-              BigInt(Math.floor(Date.now() / 1000) + 20),
-              new ChainId(chainId)
-            )
-            const plaintx2 = new RawTransaction(
-              AccountAddress.fromHex(userPublicKey.address()),
-              BigInt((parseFloat(sequnceNumber) + 1).toString()),
-              scriptFunctionPayload,
-              BigInt(2000),
-              BigInt(0),
-              BigInt(Math.floor(Date.now() / 1000) + 20),
-              new ChainId(chainId)
-            )
-            const signedTxs = await NightlyAptos.signAllTransactions([plaintx, plaintx2])
-            for (const tx of signedTxs) {
-              const result = await faucetClient.submitSignedBCSTransaction(tx)
-              console.log(result)
-            }
-          }}>
-          Send test 2x 1000 AptosCoin
-        </Button>
+
         <Button
           variant='contained'
           color='primary'
