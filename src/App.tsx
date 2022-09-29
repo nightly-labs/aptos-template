@@ -1,15 +1,16 @@
 import { Typography } from '@mui/material'
 import Button from '@mui/material/Button'
-import { FaucetClient, TxnBuilderTypes, BCS } from 'aptos'
+import { FaucetClient } from 'aptos'
 import { useState } from 'react'
 import './App.css'
 import { CreateCollectionButton } from './CreateCollection'
 import { NightlyWalletAdapter } from './nightly'
 import { AptosPublicKey } from './types'
+import { TransactionPayload } from 'aptos/src/generated'
 import docs from './docs.png'
 
 const NightlyAptos = new NightlyWalletAdapter()
-const TESTNET_URL = 'https://fullnode.devnet.aptoslabs.com'
+const TESTNET_URL = 'https://rpc.aptos.nightly.app'
 const FAUCET_URL = 'https://faucet.devnet.aptoslabs.com'
 const faucetClient = new FaucetClient(TESTNET_URL, FAUCET_URL)
 const ADDRESS_TO_SEND_COIN = '0x507e4b853aa11f93fcd53a668240a5ea131a85003ed7144e20da367b6528fc87'
@@ -24,7 +25,7 @@ function App() {
             onClick={() => {
               window.open('https://docs.nightly.app/docs/aptos/aptos/detecting')
             }}
-            style={{ background: '#2680d9', color: '#000000', marginBottom: '64px' }}>
+            style={{ background: '#2680d9', marginBottom: '64px' }}>
             <img src={docs} style={{ width: '40px', height: '40px', paddingRight: '16px' }} />
             Open documentation
           </Button>
@@ -53,39 +54,18 @@ function App() {
           variant='contained'
           style={{ margin: 10 }}
           onClick={async () => {
-            if (!userPublicKey) {
-              console.log('Error with connected')
-              return
+            if (!userPublicKey) return
+            const tx: TransactionPayload = {
+              type: 'entry_function_payload',
+              arguments: [
+                '0x4834430bce35346ccadf1901ef0576d7d4247c4f31b08b8b7ae67884a323ab68',
+                1000
+              ],
+              function: '0x1::coin::transfer',
+              type_arguments: ['0x1::aptos_coin::AptosCoin']
             }
 
-            const [{ sequence_number: sequnceNumber }, chainId] = await Promise.all([
-              faucetClient.getAccount(userPublicKey.address()),
-              faucetClient.getChainId()
-            ])
-            const token = new TxnBuilderTypes.TypeTagStruct(
-              TxnBuilderTypes.StructTag.fromString('0x1::aptos_coin::AptosCoin')
-            )
-            const scriptFunctionPayload = new TxnBuilderTypes.TransactionPayloadEntryFunction(
-              TxnBuilderTypes.EntryFunction.natural(
-                '0x1::coin',
-                'transfer',
-                [token],
-                [
-                  BCS.bcsToBytes(TxnBuilderTypes.AccountAddress.fromHex(ADDRESS_TO_SEND_COIN)),
-                  BCS.bcsSerializeUint64(1_000)
-                ]
-              )
-            )
-            const rawTxn = new TxnBuilderTypes.RawTransaction(
-              TxnBuilderTypes.AccountAddress.fromHex(userPublicKey.address()),
-              BigInt(sequnceNumber),
-              scriptFunctionPayload,
-              BigInt(100000),
-              BigInt(100),
-              BigInt(Math.floor(Date.now() / 1000) + 20),
-              new TxnBuilderTypes.ChainId(chainId)
-            )
-            const bcsTxn = await NightlyAptos.signTransaction(rawTxn)
+            const bcsTxn = await NightlyAptos.signTransaction(tx)
             const result = await faucetClient.submitSignedBCSTransaction(bcsTxn)
             console.log('transaction hash -> ', result)
           }}>
@@ -95,54 +75,34 @@ function App() {
           variant='contained'
           style={{ margin: 10 }}
           onClick={async () => {
-            if (!userPublicKey) {
-              console.log('Error with connected')
-              return
+            if (!userPublicKey) return
+            const tx: TransactionPayload = {
+              type: 'entry_function_payload',
+              arguments: [
+                '0x4834430bce35346ccadf1901ef0576d7d4247c4f31b08b8b7ae67884a323ab68',
+                1000
+              ],
+              function: '0x1::coin::transfer',
+              type_arguments: ['0x1::aptos_coin::AptosCoin']
             }
-            const [{ sequence_number: sequnceNumber }, chainId] = await Promise.all([
-              faucetClient.getAccount(userPublicKey.address()),
-              faucetClient.getChainId()
-            ])
-            const token = new TxnBuilderTypes.TypeTagStruct(
-              TxnBuilderTypes.StructTag.fromString('0x1::aptos_coin::AptosCoin')
-            )
-            const scriptFunctionPayload = new TxnBuilderTypes.TransactionPayloadEntryFunction(
-              TxnBuilderTypes.EntryFunction.natural(
-                '0x1::coin',
-                'transfer',
-                [token],
-                [
-                  BCS.bcsToBytes(TxnBuilderTypes.AccountAddress.fromHex(ADDRESS_TO_SEND_COIN)),
-                  BCS.bcsSerializeUint64(1_000)
-                ]
-              )
-            )
-            const plaintx = new TxnBuilderTypes.RawTransaction(
-              TxnBuilderTypes.AccountAddress.fromHex(userPublicKey.address()),
-              BigInt(sequnceNumber),
-              scriptFunctionPayload,
-              BigInt(100000),
-              BigInt(100),
-              BigInt(Math.floor(Date.now() / 1000) + 20),
-              new TxnBuilderTypes.ChainId(chainId)
-            )
-            const plaintx2 = new TxnBuilderTypes.RawTransaction(
-              TxnBuilderTypes.AccountAddress.fromHex(userPublicKey.address()),
-              BigInt((parseFloat(sequnceNumber) + 1).toString()),
-              scriptFunctionPayload,
-              BigInt(100000),
-              BigInt(100),
-              BigInt(Math.floor(Date.now() / 1000) + 20),
-              new TxnBuilderTypes.ChainId(chainId)
-            )
-            const signedTxs = await NightlyAptos.signAllTransactions([plaintx, plaintx2])
-            for (const tx of signedTxs) {
-              const result = await faucetClient.submitSignedBCSTransaction(tx)
-              console.log(result)
+            const tx2: TransactionPayload = {
+              type: 'entry_function_payload',
+              arguments: [
+                '0x4834430bce35346ccadf1901ef0576d7d4247c4f31b08b8b7ae67884a323ab68',
+                1000
+              ],
+              function: '0x1::coin::transfer',
+              type_arguments: ['0x1::aptos_coin::AptosCoin']
+            }
+            const bcsTxn = await NightlyAptos.signAllTransactions([tx, tx2])
+            for (const tx of bcsTxn) {
+              const result = await faucetClient.submitTransaction(tx)
+              console.log('transaction hash -> ', result)
             }
           }}>
-          Send test 2x 1000 AptosCoin
+          Send test 1000 AptosCoin x2
         </Button>
+
         <Button
           variant='contained'
           color='primary'
