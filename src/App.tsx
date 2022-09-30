@@ -45,7 +45,6 @@ function App() {
 
             setUserPublicKey(value)
             console.log(value.toString())
-            await Promise.all([faucetClient.fundAccount(value.address(), 100000000)])
           }}>
           Connect Aptos
         </Button>

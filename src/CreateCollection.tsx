@@ -3,11 +3,11 @@ import { AptosClient, FaucetClient, HexString, TransactionBuilderABI, Types } fr
 import { AptosPublicKey } from './types'
 import { NightlyWalletAdapter } from './nightly'
 
-import { TransactionPayload } from 'aptos/src/generated'
+// import { TransactionPayload } from 'aptos/src/generated'
 
 import { fenecImages, TOKEN_ABIS } from './utils/const'
 
-const TESTNET_URL = 'https://fullnode.devnet.aptoslabs.com'
+const TESTNET_URL = 'https://rpc.aptos.nightly.app'
 const FAUCET_URL = 'https://faucet.devnet.aptoslabs.com'
 
 const sleep = milliseconds => {
@@ -18,21 +18,22 @@ export const CreateCollectionButton: React.FC<{
   NightlyAptos: NightlyWalletAdapter
 }> = ({ userPublicKey, NightlyAptos }) => {
   const aptosClient = new AptosClient(TESTNET_URL)
-  const transactionBuilderABI = new TransactionBuilderABI(
-    TOKEN_ABIS.map(abi => new HexString(abi).toUint8Array())
-  )
   const NUMBER_ITEMS = 25
   const createCollection = async () => {
     if (!userPublicKey) return
     const faucetClient = new FaucetClient(TESTNET_URL, FAUCET_URL)
     // give faucet
-    for (let i = 0; i < 3; i++) {
-      await faucetClient.fundAccount(userPublicKey.address(), 100000000)
+    try {
+      // for (let i = 0; i < 3; i++) {
+      await faucetClient.fundAccount(userPublicKey.address(), 1_000_000_000)
+      // }
+    } catch {
+      console.log('Error give faucet')
     }
 
     const collectionName = 'Funny Fennec ' + (Math.floor(Math.random() * 1000) + 1).toString()
     try {
-      const tx: TransactionPayload = {
+      const tx: Types.TransactionPayload = {
         type: 'entry_function_payload',
         arguments: [
           collectionName,
@@ -46,15 +47,15 @@ export const CreateCollectionButton: React.FC<{
       }
 
       const signedTx = await NightlyAptos.signTransaction(tx)
-      const arrayCreateTokens: TransactionPayload[] = []
+      const arrayCreateTokens: Types.TransactionPayload[] = []
 
       const result = await aptosClient.submitSignedBCSTransaction(signedTx)
       console.log('Create collection : ', result)
-      await sleep(500)
+      await sleep(300)
 
       for (let x = 0; x < NUMBER_ITEMS; x++) {
-        const tokenName = 'NightlyFenec ' + x.toString()
-        const createTokenPayload: TransactionPayload = {
+        const tokenName = 'Fennec ' + x.toString()
+        const createTokenPayload: Types.TransactionPayload = {
           type: 'entry_function_payload',
           arguments: [
             collectionName,
@@ -84,14 +85,14 @@ export const CreateCollectionButton: React.FC<{
       const promiseCreate: Array<Promise<Types.PendingTransaction>> = []
 
       for (const signedCreateTx of signedTxsCreate) {
-        await sleep(1000)
+        await sleep(500)
         promiseCreate.push(aptosClient.submitSignedBCSTransaction(signedCreateTx))
       }
-
-      const arrayMutableTokens: TransactionPayload[] = []
+      await sleep(3000)
+      const arrayMutableTokens: Types.TransactionPayload[] = []
       for (let x = 0; x < NUMBER_ITEMS; x++) {
         const tokenName = 'Fennec ' + x.toString()
-        const mutableTokenPayload: TransactionPayload = {
+        const mutableTokenPayload: Types.TransactionPayload = {
           type: 'entry_function_payload',
           function: '0x3::token::mutate_token_properties',
           type_arguments: [],
@@ -116,7 +117,7 @@ export const CreateCollectionButton: React.FC<{
       const signedTxsMutable = await NightlyAptos.signAllTransactions(arrayMutableTokens)
       const promise: Array<Promise<Types.PendingTransaction>> = []
       for (const signedMutableTx of signedTxsMutable) {
-        await sleep(1000)
+        await sleep(500)
         promise.push(aptosClient.submitSignedBCSTransaction(signedMutableTx))
       }
 
