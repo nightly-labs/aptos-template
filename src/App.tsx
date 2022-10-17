@@ -1,21 +1,40 @@
 import { Typography } from '@mui/material'
 import Button from '@mui/material/Button'
 import { FaucetClient } from 'aptos'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import './App.css'
 import { CreateCollectionButton } from './CreateCollection'
 import { NightlyWalletAdapter } from './nightly'
 import { AptosPublicKey } from './types'
 import { TransactionPayload } from 'aptos/src/generated'
 import docs from './docs.png'
+import { getUserCoins } from './utils/utils'
 
 const NightlyAptos = new NightlyWalletAdapter()
-const TESTNET_URL = 'https://rpc.aptos.nightly.app'
-const FAUCET_URL = 'https://faucet.devnet.aptoslabs.com'
+const TESTNET_URL = 'https://testnet.aptoslabs.com/v1/'
+const FAUCET_URL = 'https://faucet.testnet.aptoslabs.com'
 const faucetClient = new FaucetClient(TESTNET_URL, FAUCET_URL)
 const ADDRESS_TO_SEND_COIN = '0x507e4b853aa11f93fcd53a668240a5ea131a85003ed7144e20da367b6528fc87'
+
 function App() {
   const [userPublicKey, setUserPublicKey] = useState<AptosPublicKey | undefined>(undefined)
+  const [userTokens, setUserTokens] = useState([])
+  // const { data } = useQuery(GET_COIN_HASH_QUERY, {
+  //   variables: {
+  //     owner_address: userPublicKey.address()
+  //   }
+  // })
+
+  useEffect(() => {
+    if (userPublicKey) {
+      // getUserCoins(userPublicKey.address())
+      getUserCoins(userPublicKey.address()).then(response => {
+        console.log(response)
+        setUserTokens(response)
+      })
+    }
+  }, [userPublicKey])
+
   return (
     <div className='App'>
       <header className='App-header'>
@@ -45,7 +64,7 @@ function App() {
 
             setUserPublicKey(value)
             console.log(value.toString())
-            await Promise.all([faucetClient.fundAccount(value.address(), 10_000)])
+            await Promise.all([faucetClient.fundAccount(value.address(), 100000000)])
           }}>
           Connect Aptos
         </Button>
@@ -57,10 +76,7 @@ function App() {
             if (!userPublicKey) return
             const tx: TransactionPayload = {
               type: 'entry_function_payload',
-              arguments: [
-                '0x4834430bce35346ccadf1901ef0576d7d4247c4f31b08b8b7ae67884a323ab68',
-                1000
-              ],
+              arguments: [ADDRESS_TO_SEND_COIN, 1000],
               function: '0x1::coin::transfer',
               type_arguments: ['0x1::aptos_coin::AptosCoin']
             }
@@ -78,19 +94,13 @@ function App() {
             if (!userPublicKey) return
             const tx: TransactionPayload = {
               type: 'entry_function_payload',
-              arguments: [
-                '0x4834430bce35346ccadf1901ef0576d7d4247c4f31b08b8b7ae67884a323ab68',
-                1000
-              ],
+              arguments: [ADDRESS_TO_SEND_COIN, 1000],
               function: '0x1::coin::transfer',
               type_arguments: ['0x1::aptos_coin::AptosCoin']
             }
             const tx2: TransactionPayload = {
               type: 'entry_function_payload',
-              arguments: [
-                '0x4834430bce35346ccadf1901ef0576d7d4247c4f31b08b8b7ae67884a323ab68',
-                1000
-              ],
+              arguments: [ADDRESS_TO_SEND_COIN, 1000],
               function: '0x1::coin::transfer',
               type_arguments: ['0x1::aptos_coin::AptosCoin']
             }
@@ -129,6 +139,41 @@ function App() {
           }}>
           Disconnect Aptos
         </Button> */}
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: '1fr 1fr 1fr',
+            width: '100%',
+            paddingTop: '72px'
+          }}>
+          <div>
+            <span>Yours Coins</span>
+            {userTokens.map(token => {
+              return (
+                <div
+                  style={{
+                    backgroundColor: '#dbdbdb',
+                    borderRadius: '12px',
+                    color: 'black'
+                  }}>
+                  <p>Symbol: {token.symbol}</p>
+                  <p>Name: {token.name}</p>
+                  <p>Amount: {token.amount}</p>
+                  <p>Decimal: {token.decimals}</p>
+                  <p>Coin_type: {token.coin_type}</p>
+                  <p>Coin_type_hash: {token.coin_type_hash}</p>
+                  <p>Creator_address: {token.creator_address}</p>
+                </div>
+              )
+            })}
+          </div>
+          <div>
+            <span>Yours Tokens (NFT)</span>
+          </div>
+          <div>
+            <span>Yours Transaction</span>
+          </div>
+        </div>
       </header>
     </div>
   )
