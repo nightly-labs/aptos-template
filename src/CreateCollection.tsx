@@ -7,8 +7,8 @@ import { NightlyWalletAdapter } from './nightly'
 
 import { fenecImages, TOKEN_ABIS } from './utils/const'
 
-const TESTNET_URL = 'https://rpc.aptos.nightly.app'
-const FAUCET_URL = 'https://faucet.devnet.aptoslabs.com'
+const TESTNET_URL = 'https://testnet.aptoslabs.com/v1/'
+const FAUCET_URL = 'https://faucet.testnet.aptoslabs.com'
 
 const sleep = milliseconds => {
   return new Promise(resolve => setTimeout(resolve, milliseconds))
@@ -18,7 +18,7 @@ export const CreateCollectionButton: React.FC<{
   NightlyAptos: NightlyWalletAdapter
 }> = ({ userPublicKey, NightlyAptos }) => {
   const aptosClient = new AptosClient(TESTNET_URL)
-  const NUMBER_ITEMS = 25
+  const NUMBER_ITEMS = 10
   const createCollection = async () => {
     if (!userPublicKey) return
     const faucetClient = new FaucetClient(TESTNET_URL, FAUCET_URL)
@@ -51,7 +51,6 @@ export const CreateCollectionButton: React.FC<{
 
       const result = await aptosClient.submitSignedBCSTransaction(signedTx)
       console.log('Create collection : ', result)
-      await sleep(300)
 
       for (let x = 0; x < NUMBER_ITEMS; x++) {
         const tokenName = 'Fennec ' + x.toString()
@@ -80,6 +79,7 @@ export const CreateCollectionButton: React.FC<{
         }
         arrayCreateTokens.push(createTokenPayload)
       }
+      await sleep(2000)
 
       const signedTxsCreate = await NightlyAptos.signAllTransactions(arrayCreateTokens)
       const promiseCreate: Array<Promise<Types.PendingTransaction>> = []

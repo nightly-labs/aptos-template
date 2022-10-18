@@ -1,11 +1,4 @@
-import {
-  ApolloClient,
-  gql,
-  HttpLink,
-  InMemoryCache,
-  NormalizedCacheObject,
-  useQuery
-} from '@apollo/client'
+import { ApolloClient, gql, HttpLink, InMemoryCache, NormalizedCacheObject } from '@apollo/client'
 
 const GET_COIN_HASH_QUERY = gql`
   query GetCoinHash($owner_address: String) {
@@ -24,6 +17,26 @@ const GET_COIN_INFOS_QUERY = gql`
       creator_address
       coin_type_hash
       coin_type
+    }
+  }
+`
+
+const GET_USET_TOKENS_QUERY = gql`
+  query GetTokensData($path: String = "", $amount: String) {
+    current_token_ownerships(where: { owner_address: { _eq: $amount }, amount: { _gt: "0" } }) {
+      owner_address
+      token_properties
+      property_version
+      name
+      current_token_data {
+        supply
+        name
+        metadata_uri
+        collection_name
+        creator_address
+      }
+      creator_address
+      amount
     }
   }
 `
