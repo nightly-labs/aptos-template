@@ -10,8 +10,8 @@ import { TransactionPayload } from 'aptos/src/generated'
 import docs from './docs.png'
 
 const NightlyAptos = new NightlyWalletAdapter()
-const TESTNET_URL = 'https://rpc.aptos.nightly.app'
-const FAUCET_URL = 'https://faucet.devnet.aptoslabs.com'
+const TESTNET_URL = 'https://fullnode.testnet.aptoslabs.com'
+const FAUCET_URL = 'https://fullnode.testnet.aptoslabs.com'
 const faucetClient = new FaucetClient(TESTNET_URL, FAUCET_URL)
 const ADDRESS_TO_SEND_COIN = '0x507e4b853aa11f93fcd53a668240a5ea131a85003ed7144e20da367b6528fc87'
 function App() {

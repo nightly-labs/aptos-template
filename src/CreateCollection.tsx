@@ -1,14 +1,14 @@
 import { Button, Grid } from '@mui/material'
-import { AptosClient, FaucetClient, HexString, TransactionBuilderABI, Types } from 'aptos'
+import { AptosClient, FaucetClient, Types } from 'aptos'
 import { AptosPublicKey } from './types'
 import { NightlyWalletAdapter } from './nightly'
 
 // import { TransactionPayload } from 'aptos/src/generated'
 
-import { fenecImages, TOKEN_ABIS } from './utils/const'
+import { fenecImages } from './utils/const'
 
-const TESTNET_URL = 'https://rpc.aptos.nightly.app'
-const FAUCET_URL = 'https://faucet.devnet.aptoslabs.com'
+const TESTNET_URL = 'https://fullnode.testnet.aptoslabs.com'
+const FAUCET_URL = 'https://fullnode.testnet.aptoslabs.com'
 
 const sleep = milliseconds => {
   return new Promise(resolve => setTimeout(resolve, milliseconds))
@@ -18,18 +18,18 @@ export const CreateCollectionButton: React.FC<{
   NightlyAptos: NightlyWalletAdapter
 }> = ({ userPublicKey, NightlyAptos }) => {
   const aptosClient = new AptosClient(TESTNET_URL)
-  const NUMBER_ITEMS = 25
+  const NUMBER_ITEMS = 5
   const createCollection = async () => {
     if (!userPublicKey) return
     const faucetClient = new FaucetClient(TESTNET_URL, FAUCET_URL)
     // give faucet
-    try {
-      // for (let i = 0; i < 3; i++) {
-      await faucetClient.fundAccount(userPublicKey.address(), 1_000_000_000)
-      // }
-    } catch {
-      console.log('Error give faucet')
-    }
+    // try {
+    //   // for (let i = 0; i < 3; i++) {
+    //   await faucetClient.fundAccount(userPublicKey.address(), 1_000_000_000)
+    //   // }
+    // } catch {
+    //   console.log('Error give faucet')
+    // }
 
     const collectionName = 'Funny Fennec ' + (Math.floor(Math.random() * 1000) + 1).toString()
     try {
@@ -67,7 +67,7 @@ export const CreateCollectionButton: React.FC<{
             userPublicKey.address(),
             10,
             1,
-            [false, false, false, false, true],
+            [true, true, true, true, true],
             ['Test', 'Data'],
             [
               'Nightly',
@@ -85,7 +85,7 @@ export const CreateCollectionButton: React.FC<{
       const promiseCreate: Array<Promise<Types.PendingTransaction>> = []
 
       for (const signedCreateTx of signedTxsCreate) {
-        await sleep(500)
+        await sleep(200)
         promiseCreate.push(aptosClient.submitSignedBCSTransaction(signedCreateTx))
       }
       await sleep(3000)
@@ -104,10 +104,7 @@ export const CreateCollectionButton: React.FC<{
             0,
             1,
             ['Test', 'Data'],
-            [
-              'Nightly mutable',
-              `${new Date().getDay() + 1}/${new Date().getMonth()}/${new Date().getFullYear()}`
-            ],
+            ['Nightly mutable', '2022-12-12'],
             ['string', 'string']
           ]
         }
