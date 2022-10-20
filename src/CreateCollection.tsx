@@ -6,6 +6,7 @@ import { NightlyWalletAdapter } from './nightly'
 // import { TransactionPayload } from 'aptos/src/generated'
 
 import { fenecImages } from './utils/const'
+import { useState } from 'react'
 
 const TESTNET_URL = 'https://fullnode.testnet.aptoslabs.com'
 const FAUCET_URL = 'https://fullnode.testnet.aptoslabs.com'
@@ -19,6 +20,7 @@ export const CreateCollectionButton: React.FC<{
 }> = ({ userPublicKey, NightlyAptos }) => {
   const aptosClient = new AptosClient(TESTNET_URL)
   const NUMBER_ITEMS = 5
+  const [amountItems, setAmountItems] = useState(NUMBER_ITEMS)
   const createCollection = async () => {
     if (!userPublicKey) return
     const faucetClient = new FaucetClient(TESTNET_URL, FAUCET_URL)
@@ -53,7 +55,7 @@ export const CreateCollectionButton: React.FC<{
       console.log('Create collection : ', result)
       await sleep(300)
 
-      for (let x = 0; x < NUMBER_ITEMS; x++) {
+      for (let x = 0; x < amountItems; x++) {
         const tokenName = 'Fennec ' + x.toString()
         const createTokenPayload: Types.TransactionPayload = {
           type: 'entry_function_payload',
@@ -90,7 +92,7 @@ export const CreateCollectionButton: React.FC<{
       }
       await sleep(3000)
       const arrayMutableTokens: Types.TransactionPayload[] = []
-      for (let x = 0; x < NUMBER_ITEMS; x++) {
+      for (let x = 0; x < amountItems; x++) {
         const tokenName = 'Fennec ' + x.toString()
         const mutableTokenPayload: Types.TransactionPayload = {
           type: 'entry_function_payload',
@@ -133,8 +135,18 @@ export const CreateCollectionButton: React.FC<{
         onClick={async () => {
           await createCollection()
         }}>
-        Create Collection with {NUMBER_ITEMS} items
+        Create Collection with {amountItems} items
       </Button>
+      <input
+        value={amountItems}
+        max={25}
+        min={1}
+        style={{ width: '40px', margin: '0px 16px', height: '36px', fontSize: '16px' }}
+        type='number'
+        onChange={e => {
+          setAmountItems(+e.currentTarget.value)
+        }}
+      />
     </Grid>
   )
 }
