@@ -107,7 +107,7 @@ export const CreateCollectionButton: React.FC<{
             1,
             ['Test', 'Data'],
             ['Nightly mutable', '2022-12-12'],
-            ['string', 'string']
+            ['0x1::string:String', '0x1::string:String']
           ]
         }
         arrayMutableTokens.push(mutableTokenPayload)
