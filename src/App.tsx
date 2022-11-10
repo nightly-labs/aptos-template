@@ -1,21 +1,51 @@
 import { Typography } from '@mui/material'
 import Button from '@mui/material/Button'
 import { FaucetClient } from 'aptos'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import './App.css'
 import { CreateCollectionButton } from './CreateCollection'
 import { NightlyWalletAdapter } from './nightly'
 import { AptosPublicKey } from './types'
 import { TransactionPayload } from 'aptos/src/generated'
 import docs from './docs.png'
-
+import {
+  AppAptos,
+  NETWORK,
+  clearPersistedSessionId,
+  clearPersistedSessionPublicKey,
+  getPersistedSessionId,
+  getPersistedSessionPublicKey,
+  setPersistedSessionPublicKey
+} from '@nightlylabs/connect-aptos'
+import { NightlyConnectModal } from '@nightlylabs/connect-aptos'
+import { NCAptosWalletAdapter } from './nighltyConnect'
 const NightlyAptos = new NightlyWalletAdapter()
 const TESTNET_URL = 'https://fullnode.testnet.aptoslabs.com'
 const FAUCET_URL = 'https://fullnode.testnet.aptoslabs.com'
 const faucetClient = new FaucetClient(TESTNET_URL, FAUCET_URL)
 const ADDRESS_TO_SEND_COIN = '0x507e4b853aa11f93fcd53a668240a5ea131a85003ed7144e20da367b6528fc87'
+
+const NightlyConnectAptos = new NCAptosWalletAdapter({
+  appMetadata: {
+    additionalInfo: ' Test Additional infoo',
+    application: 'Test application',
+    description: 'Test description',
+    icon: 'https://docs.nightly.app/img/logo.png'
+  }
+})
+
 function App() {
   const [userPublicKey, setUserPublicKey] = useState<AptosPublicKey | undefined>(undefined)
+  useEffect(() => {
+    NightlyConnectAptos.modal.onOpen = () => {
+      console.log('modal opened with event handler')
+    }
+    // NightlyConnectAptos.on('connect', setUserPublicKey)
+    // NightlyConnectAptos.on('error', error => {
+    //   console.log(error)
+    // })
+  }, [])
+
   return (
     <div className='App'>
       <header className='App-header'>
@@ -48,7 +78,20 @@ function App() {
           }}>
           Connect Aptos
         </Button>
-
+        <Button
+          variant='contained'
+          color='primary'
+          style={{ margin: 10 }}
+          onClick={async () => {
+            try {
+              await NightlyConnectAptos.connect()
+              setUserPublicKey(NightlyConnectAptos._publicKey)
+            } catch (err) {
+              console.log('error', err)
+            }
+          }}>
+          Nightly Connect
+        </Button>
         <Button
           variant='contained'
           style={{ margin: 10 }}
@@ -64,9 +107,17 @@ function App() {
               type_arguments: ['0x1::aptos_coin::AptosCoin']
             }
 
-            const bcsTxn = await NightlyAptos.signTransaction(tx)
-            const result = await faucetClient.submitSignedBCSTransaction(bcsTxn)
-            console.log('transaction hash -> ', result)
+            if (NightlyConnectAptos.connected) {
+              const bcsTxn = await NightlyConnectAptos.signTransaction(tx)
+              console.log('j')
+              const result = await faucetClient.submitSignedBCSTransaction(bcsTxn)
+              console.log('d')
+              console.log('transaction hash -> ', result)
+            } else {
+              const bcsTxn = await NightlyAptos.signTransaction(tx)
+              const result = await faucetClient.submitSignedBCSTransaction(bcsTxn)
+              console.log('transaction hash -> ', result)
+            }
           }}>
           Send test 1000 AptosCoin
         </Button>
