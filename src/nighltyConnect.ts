@@ -19,7 +19,9 @@ export class NCAptosWalletAdapter implements WalletAdapter {
   modal: NightlyConnectModal
   private _appInfo: Omit<AptosAppInfo, 'onUserConnect'>
   private _app: AppAptos | undefined
-  private _onAppConnectSuccess = () => {}
+  private _onAppConnectSuccess = a => {
+    return a
+  }
 
   constructor(appInfo: Omit<AptosAppInfo, 'onUserConnect'>) {
     this._connected = false
@@ -43,22 +45,14 @@ export class NCAptosWalletAdapter implements WalletAdapter {
   }
 
   public async signAllTransactions(transactions: TransactionPayload[]): Promise<Uint8Array[]> {
-    return await this._provider.signAllTransactions(transactions)
-  }
-
-  private get _provider(): AptosNightly {
-    if ((window as any)?.nightly.aptos) {
-      return (window as any).nightly.aptos
-    } else {
-      throw new Error('AptosNightly: aptos is not defined')
-    }
+    return await this._app.signAllTransactions(transactions)
   }
 
   async connect() {
-    return new Promise<void>((resolve, reject) => {
+    return new Promise<AptosPublicKey>((resolve, reject) => {
       try {
         if (this.connected || this.connecting) {
-          resolve()
+          resolve(this._publicKey)
           return
         }
 
@@ -89,7 +83,7 @@ export class NCAptosWalletAdapter implements WalletAdapter {
               this._connected = true
               console.log('connect', this._publicKey)
               this.modal.closeModal()
-              this._onAppConnectSuccess()
+              this._onAppConnectSuccess(this._publicKey)
               return this._publicKey
             }
           })
@@ -105,7 +99,7 @@ export class NCAptosWalletAdapter implements WalletAdapter {
                 this._connecting = false
                 this._connected = true
                 console.log('connect', this._publicKey)
-                resolve()
+                resolve(this._publicKey)
                 return this._publicKey
               } else {
                 this.modal.openModal(app.sessionId, NETWORK.APTOS)
@@ -136,15 +130,15 @@ export class NCAptosWalletAdapter implements WalletAdapter {
   }
 
   async signTransaction(transaction: TransactionPayload) {
-    return await this._provider.signTransaction(transaction)
+    return await this._app.signTransaction(transaction)
   }
 
   async signMessage(msg: string) {
-    if (!this._provider) {
+    if (!this._app) {
       return msg
     }
 
-    return await this._provider.signMessage(msg)
+    return await this._app.signMessage(msg)
   }
 
   async disconnect() {
@@ -154,8 +148,6 @@ export class NCAptosWalletAdapter implements WalletAdapter {
       this._connected = false
       clearPersistedSessionId()
       clearPersistedSessionPublicKey()
-
-      //this.emit('disconnect')
     }
   }
 }
