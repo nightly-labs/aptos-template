@@ -8,16 +8,6 @@ import { NightlyWalletAdapter } from './nightly'
 import { AptosPublicKey } from './types'
 import { TransactionPayload } from 'aptos/src/generated'
 import docs from './docs.png'
-import {
-  AppAptos,
-  NETWORK,
-  clearPersistedSessionId,
-  clearPersistedSessionPublicKey,
-  getPersistedSessionId,
-  getPersistedSessionPublicKey,
-  setPersistedSessionPublicKey
-} from '@nightlylabs/connect-aptos'
-import { NightlyConnectModal } from '@nightlylabs/connect-aptos'
 import { NCAptosWalletAdapter } from './nighltyConnect'
 const NightlyAptos = new NightlyWalletAdapter()
 const TESTNET_URL = 'https://fullnode.testnet.aptoslabs.com'
@@ -40,10 +30,6 @@ function App() {
     NightlyConnectAptos.modal.onOpen = () => {
       console.log('modal opened with event handler')
     }
-    // NightlyConnectAptos.on('connect', setUserPublicKey)
-    // NightlyConnectAptos.on('error', error => {
-    //   console.log(error)
-    // })
   }, [])
 
   return (
@@ -109,9 +95,7 @@ function App() {
 
             if (NightlyConnectAptos.connected) {
               const bcsTxn = await NightlyConnectAptos.signTransaction(tx)
-              console.log('j')
               const result = await faucetClient.submitSignedBCSTransaction(bcsTxn)
-              console.log('d')
               console.log('transaction hash -> ', result)
             } else {
               const bcsTxn = await NightlyAptos.signTransaction(tx)
