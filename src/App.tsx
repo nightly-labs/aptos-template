@@ -8,16 +8,6 @@ import { NightlyWalletAdapter } from './nightly'
 import { AptosPublicKey } from './types'
 import { TransactionPayload } from 'aptos/src/generated'
 import docs from './docs.png'
-import {
-  AppAptos,
-  NETWORK,
-  clearPersistedSessionId,
-  clearPersistedSessionPublicKey,
-  getPersistedSessionId,
-  getPersistedSessionPublicKey,
-  setPersistedSessionPublicKey
-} from '@nightlylabs/connect-aptos'
-import { NightlyConnectModal } from '@nightlylabs/connect-aptos'
 import { NCAptosWalletAdapter } from './nighltyConnect'
 const NightlyAptos = new NightlyWalletAdapter()
 const TESTNET_URL = 'https://fullnode.testnet.aptoslabs.com'
@@ -40,10 +30,6 @@ function App() {
     NightlyConnectAptos.modal.onOpen = () => {
       console.log('modal opened with event handler')
     }
-    // NightlyConnectAptos.on('connect', setUserPublicKey)
-    // NightlyConnectAptos.on('error', error => {
-    //   console.log(error)
-    // })
   }, [])
 
   return (
@@ -74,7 +60,6 @@ function App() {
             })
 
             setUserPublicKey(value)
-            console.log(value.toString())
           }}>
           Connect Aptos
         </Button>
@@ -84,8 +69,8 @@ function App() {
           style={{ margin: 10 }}
           onClick={async () => {
             try {
-              await NightlyConnectAptos.connect()
-              setUserPublicKey(NightlyConnectAptos._publicKey)
+              const a = await NightlyConnectAptos.connect()
+              setUserPublicKey(new AptosPublicKey(a))
             } catch (err) {
               console.log('error', err)
             }
@@ -96,27 +81,30 @@ function App() {
           variant='contained'
           style={{ margin: 10 }}
           onClick={async () => {
-            if (!userPublicKey) return
-            const tx: TransactionPayload = {
-              type: 'entry_function_payload',
-              arguments: [
-                '0x4834430bce35346ccadf1901ef0576d7d4247c4f31b08b8b7ae67884a323ab68',
-                1000
-              ],
-              function: '0x1::coin::transfer',
-              type_arguments: ['0x1::aptos_coin::AptosCoin']
-            }
+            if (userPublicKey) {
+              try {
+                const tx: TransactionPayload = {
+                  type: 'entry_function_payload',
+                  arguments: [
+                    '0x4834430bce35346ccadf1901ef0576d7d4247c4f31b08b8b7ae67884a323ab68',
+                    1000
+                  ],
+                  function: '0x1::coin::transfer',
+                  type_arguments: ['0x1::aptos_coin::AptosCoin']
+                }
 
-            if (NightlyConnectAptos.connected) {
-              const bcsTxn = await NightlyConnectAptos.signTransaction(tx)
-              console.log('j')
-              const result = await faucetClient.submitSignedBCSTransaction(bcsTxn)
-              console.log('d')
-              console.log('transaction hash -> ', result)
-            } else {
-              const bcsTxn = await NightlyAptos.signTransaction(tx)
-              const result = await faucetClient.submitSignedBCSTransaction(bcsTxn)
-              console.log('transaction hash -> ', result)
+                if (NightlyConnectAptos._connected) {
+                  const bcsTxn = await NightlyConnectAptos.signTransaction(tx)
+                  const result = await faucetClient.submitSignedBCSTransaction(bcsTxn)
+                  console.log('transaction hash -> ', result)
+                } else {
+                  const bcsTxn = await NightlyAptos.signTransaction(tx)
+                  const result = await faucetClient.submitSignedBCSTransaction(bcsTxn)
+                  console.log('transaction hash -> ', result)
+                }
+              } catch (err) {
+                console.log(err)
+              }
             }
           }}>
           Send test 1000 AptosCoin
