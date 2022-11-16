@@ -78,21 +78,17 @@ function App() {
           variant='contained'
           style={{ margin: 10 }}
           onClick={async () => {
-            if (!userPublicKey) return
             const tx: TransactionPayload = {
               type: 'entry_function_payload',
-              arguments: [
-                '0x4834430bce35346ccadf1901ef0576d7d4247c4f31b08b8b7ae67884a323ab68',
-                1000
-              ],
+              arguments: [userPublicKey.address(), 1],
               function: '0x1::coin::transfer',
               type_arguments: ['0x1::aptos_coin::AptosCoin']
             }
 
             const bcsTxn = await NightlyConnectAptos.signTransaction(tx)
-            const result = await faucetClient.submitSignedBCSTransaction(bcsTxn)
 
-            console.log('transaction hash -> ', result)
+            const result = await faucetClient.submitSignedBCSTransaction(bcsTxn)
+            console.log(result)
           }}>
           Send test 1000 AptosCoin Nighlty Connect
         </Button>
