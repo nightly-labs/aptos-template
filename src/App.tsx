@@ -13,7 +13,6 @@ const NightlyAptos = new NightlyWalletAdapter()
 const TESTNET_URL = 'https://fullnode.testnet.aptoslabs.com'
 const FAUCET_URL = 'https://fullnode.testnet.aptoslabs.com'
 const faucetClient = new FaucetClient(TESTNET_URL, FAUCET_URL)
-const ADDRESS_TO_SEND_COIN = '0x507e4b853aa11f93fcd53a668240a5ea131a85003ed7144e20da367b6528fc87'
 
 const NightlyConnectAptos = new NCAptosWalletAdapter({
   appMetadata: {
