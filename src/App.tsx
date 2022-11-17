@@ -81,7 +81,7 @@ function App() {
               type: 'entry_function_payload',
               arguments: [
                 '0x4834430bce35346ccadf1901ef0576d7d4247c4f31b08b8b7ae67884a323ab68',
-                10 ** 7
+                10 ** 6
               ],
               function: '0x1::aptos_account::transfer',
               type_arguments: []
@@ -92,7 +92,7 @@ function App() {
             const result = await faucetClient.submitSignedBCSTransaction(bcsTxn)
             console.log(result)
           }}>
-          Send test 0.1 AptosCoin Nighlty Connect
+          Send test 0.01 AptosCoin Nighlty Connect
         </Button>
         <Button
           variant='contained'
