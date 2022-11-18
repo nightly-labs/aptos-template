@@ -13,7 +13,6 @@ const NightlyAptos = new NightlyWalletAdapter()
 const TESTNET_URL = 'https://fullnode.testnet.aptoslabs.com'
 const FAUCET_URL = 'https://fullnode.testnet.aptoslabs.com'
 const faucetClient = new FaucetClient(TESTNET_URL, FAUCET_URL)
-const ADDRESS_TO_SEND_COIN = '0x507e4b853aa11f93fcd53a668240a5ea131a85003ed7144e20da367b6528fc87'
 
 const NightlyConnectAptos = new NCAptosWalletAdapter({
   appMetadata: {
@@ -69,14 +68,31 @@ function App() {
           color='primary'
           style={{ margin: 10 }}
           onClick={async () => {
-            try {
-              await NightlyConnectAptos.connect()
-              setUserPublicKey(NightlyConnectAptos._publicKey)
-            } catch (err) {
-              console.log('error', err)
-            }
+            let key = await NightlyConnectAptos.connect()
+            setUserPublicKey(key)
           }}>
           Nightly Connect
+        </Button>
+        <Button
+          variant='contained'
+          style={{ margin: 10 }}
+          onClick={async () => {
+            const tx: TransactionPayload = {
+              type: 'entry_function_payload',
+              arguments: [
+                '0x4834430bce35346ccadf1901ef0576d7d4247c4f31b08b8b7ae67884a323ab68',
+                10 ** 6
+              ],
+              function: '0x1::aptos_account::transfer',
+              type_arguments: []
+            }
+
+            const bcsTxn = await NightlyConnectAptos.signTransaction(tx)
+
+            const result = await faucetClient.submitSignedBCSTransaction(bcsTxn)
+            console.log(result)
+          }}>
+          Send test 0.01 AptosCoin Nighlty Connect
         </Button>
         <Button
           variant='contained'
@@ -93,15 +109,9 @@ function App() {
               type_arguments: ['0x1::aptos_coin::AptosCoin']
             }
 
-            if (NightlyConnectAptos.connected) {
-              const bcsTxn = await NightlyConnectAptos.signTransaction(tx)
-              const result = await faucetClient.submitSignedBCSTransaction(bcsTxn)
-              console.log('transaction hash -> ', result)
-            } else {
-              const bcsTxn = await NightlyAptos.signTransaction(tx)
-              const result = await faucetClient.submitSignedBCSTransaction(bcsTxn)
-              console.log('transaction hash -> ', result)
-            }
+            const bcsTxn = await NightlyAptos.signTransaction(tx)
+            const result = await faucetClient.submitSignedBCSTransaction(bcsTxn)
+            console.log('transaction hash -> ', result)
           }}>
           Send test 1000 AptosCoin
         </Button>
