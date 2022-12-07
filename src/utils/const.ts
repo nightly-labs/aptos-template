@@ -17,20 +17,4 @@ export const TOKEN_ABIS = [
 
 export const MAX_U64_BIG_INT = BigInt(2 ** 64) - BigInt(1)
 
-export const fenecImages = [
-  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQp-qENICeC-_O9Nx9TAE_rfkbZPrdzgjNnmw&usqp=CAU',
-  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQzdhZB7dnx0oGWWu6t925BHgbckmkl5Rjg5w&usqp=CAU',
-  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSK7KDooG8t9rk_g59FgztCIqTTHxlBsSwcKA&usqp=CAU',
-  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQcopRa-ychrN2xc9DC5dX3CkSiTTjoD0F4og&usqp=CAU',
-  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS8oD_zl6yX2huw6dvhiKeq_GZrTr-nXBNL1A&usqp=CAU',
-  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTF_MA5238zvVVIgYYGaZFQHVRk-Pb4g6GhMw&usqp=CAU',
-  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSWEkIQ_TH_lgwJa6M5k4zUJM2QDOS0LmLoCg&usqp=CAU',
-  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSvl-iSuRDl-E4U_L3L_6GIGZGqH7Q_oEqQZA&usqp=CAU',
-  'https://cdn.dribbble.com/users/1069040/screenshots/16954103/media/8d9e56374262dc509b2f310910b731b5.png?compress=1&resize=400x300',
-  'https://media.istockphoto.com/vectors/cute-cartoon-fox-vector-id1172956360?k=20&m=1172956360&s=170667a&w=0&h=-loGap-6K1OguVH1xtkcgivRtTOPW70VxN6tryJFpDM=',
-  'https://thumbs.dreamstime.com/b/fox-kresk%C3%B3wka-45725543.jpg',
-  'https://i.pinimg.com/originals/66/f9/7b/66f97bfcf1df7818a20ea55701858b60.gif',
-  'https://vignette3.wikia.nocookie.net/animal-jam-clans-1/images/f/f7/QuickRunCycle.gif/revision/latest?cb=20160924123018',
-  'https://www.kindpng.com/picc/m/233-2330200_transparent-fennec-fox-png-drawings-of-a-cartoon.png',
-  'https://www.pngkey.com/png/detail/161-1613112_kita-as-a-fennec-fox-cartoon.png'
-]
+export const fenecImages = ['https://i.ibb.co/BwW0L9c/test-60.png']
