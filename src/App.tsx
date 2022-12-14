@@ -83,10 +83,9 @@ function App() {
                 '0x4834430bce35346ccadf1901ef0576d7d4247c4f31b08b8b7ae67884a323ab68',
                 10 ** 6
               ],
-              function: '0x1::aptos_account::transfer',
-              type_arguments: []
+              function: '0x1::coin::transfer',
+              type_arguments: ['0x1::aptos_coin::AptosCoin']
             }
-
             const bcsTxn = await NightlyConnectAptos.signTransaction(tx)
 
             const result = await faucetClient.submitSignedBCSTransaction(bcsTxn)
