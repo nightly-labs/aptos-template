@@ -10,7 +10,7 @@ import { TransactionPayload } from 'aptos/src/generated'
 import docs from './docs.png'
 import { NCAptosWalletAdapter } from './nighltyConnect'
 const NightlyAptos = new NightlyWalletAdapter()
-const TESTNET_URL = 'https://fullnode.testnet.aptoslabs.com'
+const TESTNET_URL = 'https://fullnode.devnet.aptos.nightly.app/v1'
 const FAUCET_URL = 'https://fullnode.testnet.aptoslabs.com'
 const faucetClient = new FaucetClient(TESTNET_URL, FAUCET_URL)
 
